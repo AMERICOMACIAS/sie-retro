@@ -1,0 +1,20 @@
+# Ignorar inicialmente todo lo situado en la raíz
+/*
+
+# Archivos propios del repositorio
+!/.gitignore
+!/.gitattributes
+!/README.md
+
+# Documentación del proyecto
+!/docs/
+
+# Permitir únicamente nuestras extensiones y tema propios
+!/wp-content/
+/wp-content/*
+!/wp-content/plugins/
+/wp-content/plugins/*
+!/wp-content/plugins/sie-retro/
+!/wp-content/themes/
+/wp-content/themes/*
+!/wp-content/themes/sie-retro-child/
