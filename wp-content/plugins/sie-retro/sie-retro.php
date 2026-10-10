@@ -124,10 +124,25 @@ function sie_retro_pagina_eventos() {
     //para cada evento insertamos una fila en la tabla
     foreach ($eventos as $evento) {
         echo '<tr>';
+
         //el esc_html hace que el uso del texto sea seguro
         echo '<td>' . esc_html($evento->id) . '</td>';
         echo '<td>' . esc_html($evento->tipo_evento) . '</td>';
-        echo '<td>' . esc_html($evento->order_id ?? '') . '</td>';//?? significa que si es NULL ponga una cadena vacía
+
+        //si el evento tiene un pedido asociado intentamos buscarlo en WooCommerce
+        if ($evento->order_id) {
+            $pedido = wc_get_order($evento->order_id);
+
+            //si el pedido existe ponemos un enlace directo a su pantalla de edición
+            if ($pedido) {
+                echo '<td><a href="' . esc_url($pedido->get_edit_order_url()) . '">' . esc_html($evento->order_id) . '</a></td>';
+            } else {
+                echo '<td>' . esc_html($evento->order_id) . '</td>';
+            }
+        } else {
+            echo '<td></td>';
+        }
+
         echo '<td>' . esc_html($evento->user_id ?? '') . '</td>';
         echo '<td><code>' . esc_html($evento->datos ?? '') . '</code></td>'; //datos extra
         echo '<td>' . esc_html($evento->fecha) . '</td>';
