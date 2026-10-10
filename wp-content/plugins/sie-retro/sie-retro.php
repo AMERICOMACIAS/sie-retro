@@ -56,7 +56,11 @@ function sie_retro_registrar_evento($tipo_evento, $order_id = null, $datos = nul
 
 //conectamos WooCommerce
 //WooCommerce crea pedido --> woocommerce_checkout_order_created
+//checkout clásico de WooCommerce
 add_action('woocommerce_checkout_order_created', 'sie_retro_evento_pedido_creado');
+
+//checkout moderno de WooCommerce Blocks
+add_action('woocommerce_store_api_checkout_order_processed', 'sie_retro_evento_pedido_creado');
 
 //función para registrar el evento al crear un pedido
 function sie_retro_evento_pedido_creado($order) {
@@ -68,6 +72,30 @@ function sie_retro_evento_pedido_creado($order) {
     //aqui se llama a la función de antes pasándole los parámetros que toca
     sie_retro_registrar_evento('order.created', $order->get_id(), array('total' => $order->get_total(),
             'moneda' => $order->get_currency(), 'estado' => $order->get_status(), ));
+}
+
+//cuando la pasarela simulada acepta el pago se registra el evento payment.simulated
+add_action('sie_retro_payment_simulated', 'sie_retro_evento_pago_simulado', 10, 2);
+
+//función para registrar el resultado del pago simulado
+function sie_retro_evento_pago_simulado($order_id, $resultado) {
+
+    $pedido = wc_get_order($order_id);
+
+    //si el pedido no existe no seguimos
+    if (!$pedido) {
+        return;
+    }
+
+    //registramos el evento usando la función común
+    sie_retro_registrar_evento('payment.simulated', $order_id, 
+        array(
+            'resultado' => $resultado,
+            'total' => $pedido->get_total(),
+            'moneda' => $pedido->get_currency(),
+            'estado' => $pedido->get_status()
+        )
+    );
 }
 
 //Cuando WP está generando el menú de administración, ejecuta mi función sie_retro_menu_admin de mas abajo
