@@ -156,10 +156,14 @@ function sie_retro_formulario_soporte() {
 
         if (empty($mensaje)) {
             $mensaje_resultado = '<p>Debes escribir una descripción de la incidencia.</p>';
+
+        } elseif ($order_id && !wc_get_order($order_id)) {
+            $mensaje_resultado = '<p>El número de pedido indicado no existe.</p>';
+
         } else {
             sie_retro_registrar_evento('support.requested', $order_id ?: null, array('mensaje' => $mensaje));
 
-            $mensaje_resultado = '<p>Solicitud de soporte registrada correctamente.</p>';
+        $mensaje_resultado = '<p>Solicitud de soporte registrada correctamente.</p>';
         }
     }
 
