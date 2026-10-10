@@ -93,12 +93,64 @@ function sie_retro_pagina_eventos() {
 
     $tabla = $wpdb->prefix . 'sie_retro_eventos'; //guardamos el nombre de la tabla
 
-    //query para consultar eventos de la bbdd
-    $eventos = $wpdb->get_results("SELECT * FROM $tabla ORDER BY fecha DESC");
+    //comprobar si se ha seleccionado un tipo de evento para filtrar
+    $filtro_evento = isset($_GET['tipo_evento']) ? sanitize_text_field(wp_unslash($_GET['tipo_evento'])) : '';
+
+    //si hay filtro buscamos solo ese tipo de evento
+    if (!empty($filtro_evento)) {
+
+        $eventos = $wpdb->get_results($wpdb->prepare("SELECT * FROM $tabla WHERE tipo_evento = %s ORDER BY fecha DESC", $filtro_evento));
+
+    } else {
+
+        //si no hay filtro mostramos todos los eventos
+        $eventos = $wpdb->get_results("SELECT * FROM $tabla ORDER BY fecha DESC");
+    }
 
     //ponerlo bonito
     echo '<div class="wrap">';
     echo '<h1>Eventos ESRETRO</h1>';
+
+    //formulario para filtrar eventos por tipo
+    echo '<form method="get" style="margin-bottom: 20px;">';
+
+    //campo obligatorio para mantenernos dentro de la página ESRETRO
+    echo '<input type="hidden" name="page" value="sie-retro-eventos">';
+
+    echo '<label for="tipo_evento"><strong>Filtrar por evento:</strong></label> ';
+    echo '<select name="tipo_evento" id="tipo_evento">';
+
+    echo '<option value="">Todos los eventos</option>';
+
+    echo '<option value="product.viewed"'
+        . selected($filtro_evento, 'product.viewed', false)
+        . '>product.viewed</option>';
+
+    echo '<option value="cart.item_added"'
+        . selected($filtro_evento, 'cart.item_added', false)
+        . '>cart.item_added</option>';
+
+    echo '<option value="checkout.started"'
+        . selected($filtro_evento, 'checkout.started', false)
+        . '>checkout.started</option>';
+
+    echo '<option value="order.created"'
+        . selected($filtro_evento, 'order.created', false)
+        . '>order.created</option>';
+
+    echo '<option value="payment.simulated"'
+        . selected($filtro_evento, 'payment.simulated', false)
+        . '>payment.simulated</option>';
+
+    echo '<option value="support.requested"'
+        . selected($filtro_evento, 'support.requested', false)
+        . '>support.requested</option>';
+
+    echo '</select> ';
+
+    echo '<button type="submit" class="button">Filtrar</button>';
+
+    echo '</form>';
 
     //comprobar si hay eventos y controlar la salida
     if (empty($eventos)) {
