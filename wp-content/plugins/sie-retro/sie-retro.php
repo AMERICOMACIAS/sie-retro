@@ -1,10 +1,11 @@
+
 <?php
 
 /**
  * Plugin Name: ESRETRO
  * Description: Funcionalidades propias del prototipo académico ESRETRO.
- * Version: 0.1.0
- * Author: Equipo ESRETRO
+ * Version: 1.2.0
+ * Author: Américo
  */
 
 //evita que alguien intente ejecutar directamente el archivo PHP fuera de WordPress.
@@ -285,3 +286,40 @@ function sie_retro_formulario_soporte() {
 
     return ob_get_clean();
 }
+
+//cargar la pasarela simulada cuando WooCommerce esté disponible
+add_action( 'plugins_loaded', function () {
+
+    //si WooCommerce no está activo no seguimos
+    if ( ! class_exists( 'WooCommerce' ) ) {
+        return;
+    }
+
+    require_once __DIR__ . '/includes/class-sie-retro-simulated-gateway.php';
+
+    //añadir nuestra pasarela a los métodos de pago de WooCommerce
+    add_filter('woocommerce_payment_gateways', function ( $gateways ) {
+        $gateways[] = 'WC_Gateway_SIE_Retro_Simulated';
+
+        return $gateways;
+        }
+    );
+}, 20 );
+
+//integración de la pasarela con el checkout moderno de WooCommerce Blocks
+add_action( 'woocommerce_blocks_loaded', function () {
+    $integration_class = 'Automattic\\WooCommerce\\Blocks\\Payments\\Integrations\\AbstractPaymentMethodType';
+
+    //si WooCommerce Blocks no dispone de esta clase no seguimos
+    if ( ! class_exists( $integration_class ) ) {
+        return;
+    }
+
+    require_once __DIR__ . '/includes/class-sie-retro-simulated-blocks.php';
+
+    add_action('woocommerce_blocks_payment_method_type_registration', 
+        function ( $registry ) {
+            $registry->register(new SIE_Retro_Simulated_Blocks_Integration());
+        });
+});
+
