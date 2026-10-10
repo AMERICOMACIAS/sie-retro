@@ -138,3 +138,79 @@ function sie_retro_pagina_eventos() {
     echo '</table>';
     echo '</div>';
 }
+
+//crea un shortcode de WordPress. cuando escribamos [sie_retro_soporte] en un bloque de tipo shortcode
+//se ejecutará la función de mas abajo para mostrar un formulario hy enviarlo
+add_shortcode('sie_retro_soporte', 'sie_retro_formulario_soporte');
+
+//función hecha con IA
+function sie_retro_formulario_soporte() {
+    $mensaje_resultado = '';//variable para guardar el mensaje
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sie_retro_soporte_nonce'])
+        && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['sie_retro_soporte_nonce'])),
+            'sie_retro_enviar_soporte')) {
+        $order_id = isset($_POST['order_id']) ? absint($_POST['order_id']) : 0;
+
+        $mensaje = isset($_POST['mensaje']) ? sanitize_textarea_field(wp_unslash($_POST['mensaje'])):'';
+
+        if (empty($mensaje)) {
+            $mensaje_resultado = '<p>Debes escribir una descripción de la incidencia.</p>';
+        } else {
+            sie_retro_registrar_evento('support.requested', $order_id ?: null, array('mensaje' => $mensaje));
+
+            $mensaje_resultado = '<p>Solicitud de soporte registrada correctamente.</p>';
+        }
+    }
+
+    ob_start();
+
+    echo $mensaje_resultado;
+    ?>
+
+    <form method="post"> <!-- pulsar enviar manda los datos al servidor -->
+
+        <p>
+            <label for="order_id">
+                Número de pedido (opcional)
+            </label>
+            <br>
+
+            <input
+                type="number"
+                id="order_id"
+                name="order_id"
+                min="1"
+            >
+        </p>
+
+        <p>
+            <label for="mensaje">
+                Describe la incidencia
+            </label>
+            <br>
+
+            <textarea
+                id="mensaje"
+                name="mensaje"
+                rows="5"
+                required
+            ></textarea>
+        </p>
+
+        <?php
+        wp_nonce_field('sie_retro_enviar_soporte', 'sie_retro_soporte_nonce');
+        ?>
+
+        <p>
+            <button type="submit">
+                Enviar solicitud
+            </button>
+        </p>
+
+    </form>
+
+    <?php
+
+    return ob_get_clean();
+}
