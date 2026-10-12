@@ -1,33 +1,32 @@
 <?php
+/**
+ * Registro centralizado de eventos de ESRETRO.
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
 if ( ! class_exists( 'SIE_Retro_Events' ) ) {
+
     final class SIE_Retro_Events {
 
         /**
-         * Nombre completo de la tabla, con el prefijo configurado en WordPress.
-         *
-         * @return string
+         * Nombre de la tabla de eventos.
          */
         public static function table_name() {
             global $wpdb;
+
             return $wpdb->prefix . 'sie_retro_events';
         }
 
         /**
-         * Crea o actualiza la tabla de eventos.
-         *
-         * No elimina la tabla existente ni los datos guardados.
-         *
-         * @return void
+         * Crea o actualiza la tabla sin borrar los registros existentes.
          */
         public static function install() {
             global $wpdb;
 
-            $table          = self::table_name();
+            $table           = self::table_name();
             $charset_collate = $wpdb->get_charset_collate();
 
             require_once ABSPATH . 'wp-admin/includes/upgrade.php';
@@ -50,9 +49,7 @@ if ( ! class_exists( 'SIE_Retro_Events' ) ) {
         }
 
         /**
-         * Eventos que el prototipo reconoce.
-         *
-         * @return array
+         * Tipos de evento permitidos.
          */
         public static function allowed_event_types() {
             return array(
@@ -67,44 +64,65 @@ if ( ! class_exists( 'SIE_Retro_Events' ) ) {
         }
 
         /**
-         * Guarda un evento en la tabla.
-         *
-         * La firma admite la llamada utilizada en sie-retro.php:
-         * SIE_Retro_Events::record( $event_type, $data ).
+         * Registra un evento.
          *
          * @param string $event_type Tipo de evento.
-         * @param array  $data       Datos adicionales del evento.
-         * @return int|false ID insertado o false si falla la validación/inserción.
+         * @param array  $data       Datos adicionales.
+         * @return int|false ID insertado o false si falla.
          */
         public static function record( $event_type, $data = array() ) {
             global $wpdb;
 
-            if ( ! is_string( $event_type ) || ! in_array( $event_type, self::allowed_event_types(), true ) ) {
+            if (
+                ! is_string( $event_type )
+                || ! in_array( $event_type, self::allowed_event_types(), true )
+            ) {
                 return false;
             }
 
             if ( ! is_array( $data ) ) {
-                $data = array();
+                return false;
             }
 
-            $product_id = isset( $data['product_id'] ) ? absint( $data['product_id'] ) : null;
-            $order_id   = isset( $data['order_id'] ) ? absint( $data['order_id'] ) : null;
+            $product_id = isset( $data['product_id'] )
+                ? absint( $data['product_id'] )
+                : null;
 
-            // Evitar que los IDs se guarden dos veces dentro del JSON.
+            $order_id = isset( $data['order_id'] )
+                ? absint( $data['order_id'] )
+                : null;
+
+            // Los identificadores se almacenan en sus propias columnas.
             unset( $data['product_id'], $data['order_id'] );
 
-            $encoded_data = empty( $data ) ? null : wp_json_encode( $data );
+            $encoded_data = empty( $data )
+                ? null
+                : wp_json_encode( $data );
+
+            if ( false === $encoded_data ) {
+                return false;
+            }
+
+            $row = array(
+                'event_type'  => $event_type,
+                'occurred_at' => current_time( 'mysql' ),
+                'product_id'  => $product_id ?: null,
+                'order_id'    => $order_id ?: null,
+                'event_data'  => $encoded_data,
+            );
+
+            $formats = array(
+                '%s',
+                '%s',
+                null !== $row['product_id'] ? '%d' : null,
+                null !== $row['order_id'] ? '%d' : null,
+                null !== $row['event_data'] ? '%s' : null,
+            );
 
             $inserted = $wpdb->insert(
                 self::table_name(),
-                array(
-                    'event_type'  => $event_type,
-                    'occurred_at' => current_time( 'mysql' ),
-                    'product_id'  => $product_id ?: null,
-                    'order_id'    => $order_id ?: null,
-                    'event_data'  => $encoded_data,
-                ),
-                array( '%s', '%s', '%d', '%d', '%s' )
+                $row,
+                $formats
             );
 
             if ( false === $inserted ) {

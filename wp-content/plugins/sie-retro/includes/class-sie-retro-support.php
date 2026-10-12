@@ -93,8 +93,10 @@ if ( ! class_exists( 'SIE_Retro_Support' ) ) {
                 self::redirect_with_status( 'error' );
             }
 
-            if ( $order_id && function_exists( 'wc_get_order' ) && ! wc_get_order( $order_id ) ) {
-                self::redirect_with_status( 'error' );
+            if ( $order_id ) {
+                if ( ! function_exists( 'wc_get_order' ) || ! wc_get_order( $order_id ) ) {
+                    self::redirect_with_status( 'error' );
+                }
             }
 
             if ( ! class_exists( 'SIE_Retro_Events' ) || ! is_callable( array( 'SIE_Retro_Events', 'record' ) ) ) {

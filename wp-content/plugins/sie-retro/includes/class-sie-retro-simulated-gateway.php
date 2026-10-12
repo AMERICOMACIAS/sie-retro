@@ -70,8 +70,9 @@ if ( ! class_exists( 'WC_Gateway_SIE_Retro_Simulated' ) ) {
             // Evitar volver a emitir el evento si el método se ejecuta otra vez para el mismo pedido.
             $already_simulated = 'yes' === $order->get_meta( '_sie_retro_simulated_payment_recorded' );
 
-            $order->update_status(
-                'processing',
+            $order->payment_complete();
+
+            $order->add_order_note(
                 'Pago simulado aceptado. No se ha realizado ningún cargo real.'
             );
 

@@ -26,9 +26,11 @@ if ( ! class_exists( 'SIE_Retro_Simulated_Blocks_Integration' ) && class_exists(
         }
 
         public function get_payment_method_script_handles() {
-            $script_path = plugin_dir_path( dirname( __FILE__ ) ) . 'assets/payment-method.js';
-            $script_url  = plugins_url( '../assets/payment-method.js', __FILE__ );
+            $plugin_file = dirname( __DIR__ ) . '/sie-retro.php';
 
+            $script_path = dirname( $plugin_file ) . '/assets/payment-method.js';
+            $script_url  = plugins_url( 'assets/payment-method.js', $plugin_file );
+            
             if ( ! file_exists( $script_path ) ) {
                 return array();
             }
