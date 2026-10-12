@@ -1,92 +1,99 @@
-
 <?php
+
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if ( ! class_exists( 'WC_Payment_Gateway' ) ) {
-    return;
-}
+if ( ! class_exists( 'WC_Gateway_SIE_Retro_Simulated' ) ) {
+    class WC_Gateway_SIE_Retro_Simulated extends WC_Payment_Gateway {
 
-class WC_Gateway_SIE_Retro_Simulated extends WC_Payment_Gateway {
+        public function __construct() {
+            $this->id                 = 'sie_retro_simulated';
+            $this->method_title       = 'Tarjeta simulada ESRETRO';
+            $this->method_description = 'Método de pago de prueba. No realiza cargos reales.';
+            $this->has_fields         = false;
+            $this->supports           = array( 'products' );
 
-    public function __construct() {
-        $this->id                 = 'sie_retro_simulated';
-        $this->method_title       = 'Pago simulado ESRETRO';
-        $this->method_description = 'Método de pago ficticio para pruebas académicas.';
-        $this->has_fields         = false;
-        $this->supports           = array( 'products' );
+            $this->init_form_fields();
+            $this->init_settings();
 
-        $this->init_form_fields();
-        $this->init_settings();
+            $this->title       = $this->get_option( 'title', 'Tarjeta simulada' );
+            $this->description = $this->get_option( 'description', 'Pago simulado para el prototipo académico. No se realiza ningún cargo.' );
+            $this->enabled     = $this->get_option( 'enabled', 'yes' );
 
-        $this->enabled = $this->get_option( 'enabled', 'no' );
-        $this->title = $this->get_option(
-            'title',
-            'Pago simulado ESRETRO'
-        );
-
-        $this->description = $this->get_option(
-            'description',
-            'No se realizará ningún cobro real.'
-        );
-
-        add_action(
-            'woocommerce_update_options_payment_gateways_' . $this->id,
-            array( $this, 'process_admin_options' )
-        );
-    }
-
-    public function init_form_fields() {
-        $this->form_fields = array(
-            'enabled' => array(
-                'title'   => 'Activar o desactivar',
-                'type'    => 'checkbox',
-                'label'   => 'Activar pago simulado ESRETRO',
-                'default' => 'no',
-            ),
-            'title' => array(
-                'title'   => 'Título',
-                'type'    => 'text',
-                'default' => 'Pago simulado ESRETRO',
-            ),
-            'description' => array(
-                'title'   => 'Descripción',
-                'type'    => 'textarea',
-                'default' => 'Pago ficticio para el prototipo académico. No se realizará ningún cobro real.',
-            ),
-        );
-    }
-
-    public function process_payment( $order_id ) {
-        $order = wc_get_order( $order_id );
-
-        if ( ! $order ) {
-            wc_add_notice(
-                'No se ha podido recuperar el pedido.',
-                'error'
+            add_action(
+                'woocommerce_update_options_payment_gateways_' . $this->id,
+                array( $this, 'process_admin_options' )
             );
-
-            return array( 'result' => 'failure' );
         }
 
-        // Este método solo simula el resultado de un pago.
-        $order->payment_complete();
+        public function init_form_fields() {
+            $this->form_fields = array(
+                'enabled' => array(
+                    'title'   => 'Activar/desactivar',
+                    'type'    => 'checkbox',
+                    'label'   => 'Activar pago simulado',
+                    'default' => 'yes',
+                ),
+                'title' => array(
+                    'title'       => 'Título',
+                    'type'        => 'text',
+                    'description' => 'Nombre que verá el cliente en el checkout.',
+                    'default'     => 'Tarjeta simulada',
+                    'desc_tip'    => true,
+                ),
+                'description' => array(
+                    'title'       => 'Descripción',
+                    'type'        => 'textarea',
+                    'description' => 'Aclara que no se realizará ningún cargo real.',
+                    'default'     => 'Pago simulado para el prototipo académico. No se realiza ningún cargo.',
+                    'desc_tip'    => true,
+                ),
+            );
+        }
 
-        $order->add_order_note(
-            'Pago simulado ESRETRO aceptado. No se ha realizado ningún cobro real.'
-        );
+        /**
+         * Procesa el pedido como pago de prueba aceptado.
+         *
+         * @param int $order_id ID del pedido.
+         * @return array
+         */
+        public function process_payment( $order_id ) {
+            $order = wc_get_order( $order_id );
 
-        do_action(
-            'sie_retro_payment_simulated',
-            $order->get_id(),
-            'accepted'
-        );
+            if ( ! $order ) {
+                wc_add_notice( 'No se ha podido localizar el pedido para el pago simulado.', 'error' );
+                return array( 'result' => 'failure' );
+            }
 
-        return array(
-            'result'   => 'success',
-            'redirect' => $this->get_return_url( $order ),
-        );
+            // Evitar volver a emitir el evento si el método se ejecuta otra vez para el mismo pedido.
+            $already_simulated = 'yes' === $order->get_meta( '_sie_retro_simulated_payment_recorded' );
+
+            $order->update_status(
+                'processing',
+                'Pago simulado aceptado. No se ha realizado ningún cargo real.'
+            );
+
+            $order->update_meta_data( '_sie_retro_simulated_payment_recorded', 'yes' );
+            $order->save();
+
+            if ( ! $already_simulated ) {
+                /**
+                 * El archivo principal escucha este hook y registra payment.simulated.
+                 */
+                do_action( 'sie_retro_payment_simulated', $order->get_id(), 'accepted' );
+            }
+
+            // Vaciar el carrito y redirigir a la página de confirmación.
+            if ( WC()->cart ) {
+                WC()->cart->empty_cart();
+            }
+
+            return array(
+                'result'   => 'success',
+                'redirect' => $this->get_return_url( $order ),
+            );
+        }
     }
 }
