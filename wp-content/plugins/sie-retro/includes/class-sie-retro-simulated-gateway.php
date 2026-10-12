@@ -84,6 +84,14 @@ class WC_Gateway_SIE_Retro_Simulated extends WC_Payment_Gateway {
             'accepted'
         );
 
+        SIE_Retro_Events::record(
+            'payment.simulated',
+            array(
+                'order_id' => $order->get_id(),
+                'result'   => 'accepted',
+            )
+        );
+
         return array(
             'result'   => 'success',
             'redirect' => $this->get_return_url( $order ),
