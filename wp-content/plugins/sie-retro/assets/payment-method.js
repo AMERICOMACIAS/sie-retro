@@ -1,33 +1,70 @@
 
-(function () {
-    const registry = window.wc.wcBlocksRegistry;
-    const settingsApi = window.wc.wcSettings;
-    const element = window.wp.element;
+( function () {
+    'use strict';
 
-    const settings = settingsApi.getSetting(
+    if (
+        ! window.wc ||
+        ! window.wc.wcBlocksRegistry ||
+        ! window.wc.wcSettings ||
+        ! window.wp ||
+        ! window.wp.element
+    ) {
+        return;
+    }
+
+    const { registerPaymentMethod } = window.wc.wcBlocksRegistry;
+
+    const settings = window.wc.wcSettings.getSetting(
         'sie_retro_simulated_data',
         {}
     );
 
-    const title = settings.title || 'Pago simulado ESRETRO';
-    const description = settings.description ||
-        'Pago ficticio para el prototipo academico. No se realizará ningún cobro real.';
+    const { createElement } = window.wp.element;
 
-    registry.registerPaymentMethod({
+    const title = settings.title || 'Tarjeta simulada';
+
+    const description = settings.description ||
+        'Pago simulado para el prototipo académico. No se realiza ningún cargo.';
+
+    const Content = function () {
+        return createElement(
+            'div',
+            {
+                className: 'sie-retro-simulated-payment-description'
+            },
+            description
+        );
+    };
+
+    const Label = function ( props ) {
+        return createElement(
+            'span',
+            {
+                className: props && props.className
+                    ? props.className
+                    : ''
+            },
+            title
+        );
+    };
+
+    registerPaymentMethod( {
         name: 'sie_retro_simulated',
 
-        label: element.createElement('span', {}, title),
+        label: createElement( Label, null ),
 
-        content: element.createElement('div', {}, description),
+        content: createElement( Content, null ),
 
-        edit: element.createElement('div', {}, description),
+        edit: createElement( Content, null ),
+
+        canMakePayment: function () {
+            return true;
+        },
 
         ariaLabel: title,
 
-        canMakePayment: () => true,
-
         supports: {
-            features: settings.supports || ['products']
-        }
-    });
-})();
+            features: settings.supports || [ 'products' ],
+        },
+    } );
+} )();
