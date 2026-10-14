@@ -26,12 +26,11 @@ function sie_retro_inicializar_plugin() {
 
     // Registro de pedidos en el checkout por bloques.
     add_action(
-        'woocommerce_store_api_checkout_order_created',
+        'woocommerce_store_api_checkout_order_processed',
         'sie_retro_evento_pedido_creado',
         10,
         1
     );
-
     // Eventos de navegación y compra.
     add_action( 'wp', 'sie_retro_registrar_evento_checkout' );
     add_action( 'wp', 'sie_retro_registrar_evento_producto' );
