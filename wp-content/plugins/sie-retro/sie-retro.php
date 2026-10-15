@@ -127,12 +127,32 @@ function sie_retro_evento_pago_simulado( $order_id, $resultado ) {
  */
 function sie_retro_registrar_evento_checkout() {
     if (
-        function_exists( 'is_checkout' )
-        && is_checkout()
-        && ! is_order_received_page()
+        ! function_exists( 'is_checkout' )
+        || ! function_exists( 'is_order_received_page' )
+        || ! function_exists( 'WC' )
+        || ! WC()
+        || ! WC()->session
     ) {
-        sie_retro_guardar_evento( 'checkout.started', array() );
+        return;
     }
+
+    $sesion = WC()->session;
+
+    if ( is_checkout() && ! is_order_received_page() ) {
+        // Evita registrar varias veces la misma visita al checkout.
+        if ( $sesion->get( 'sie_retro_checkout_started_recorded' ) ) {
+            return;
+        }
+
+        $sesion->set( 'sie_retro_checkout_started_recorded', true );
+
+        sie_retro_guardar_evento( 'checkout.started', array() );
+
+        return;
+    }
+
+    // Al salir del checkout, permite registrar una visita posterior.
+    $sesion->__unset( 'sie_retro_checkout_started_recorded' );
 }
 
 /**
@@ -160,6 +180,7 @@ function sie_retro_registrar_evento_carrito(
     $variation,
     $cart_item_data
 ) {
+
     $id_producto = $variation_id ? $variation_id : $product_id;
 
     sie_retro_guardar_evento(
