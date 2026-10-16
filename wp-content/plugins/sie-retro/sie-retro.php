@@ -2,8 +2,8 @@
 /**
  * Plugin Name: ESRETRO
  * Description: Funcionalidades propias del prototipo académico ESRETRO.
- * Version: 1.3.0
- * Author: Javier
+ * Version: 2.0.0
+ * Author: Javier, Miguel y Américo
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
