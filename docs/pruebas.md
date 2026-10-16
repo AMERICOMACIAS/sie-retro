@@ -59,7 +59,7 @@ en DonDominio.
 - La variante seleccionada se conserva en el carrito.
 - Se utiliza el precio y stock correspondientes.
 
-**Estado:** Pendiente de validación final.
+**Estado:** SUPERADA en entorno local.
 
 ## 4. Carrito
 
@@ -96,7 +96,7 @@ en DonDominio.
 - No se permiten cantidades inválidas.
 - El producto puede eliminarse correctamente.
 
-**Estado:** Pendiente de validación final.
+**Estado:** Superada en entorno local.   
 
 ## 5. Impuestos y envío
 
@@ -162,7 +162,7 @@ en DonDominio.
 - Se registra `checkout.started`.
 - No debe generarse más de una vez por la misma entrada al checkout.
 
-**Estado:** Pendiente de comprobar tras la corrección de duplicados.
+**Estado:** Superada en entorno local.
 
 ---
 
@@ -179,7 +179,7 @@ en DonDominio.
 - El pedido no se completa.
 - WooCommerce muestra los errores correspondientes.
 
-**Estado:** Pendiente de validación final.
+**Estado:** SUPERADA en entorno local.
 
 ---
 
@@ -292,7 +292,7 @@ del producto o pedido relacionados.
 
 - El sistema no debe asociar la incidencia a un pedido inexistente.
 
-**Estado:** Pendiente de validación final.
+**Estado:** SUPERADA en entorno local.
 
 ## 10. Factura y albarán
 
@@ -309,7 +309,7 @@ del producto o pedido relacionados.
 - La factura se genera correctamente.
 - Productos, impuestos, envío y total coinciden con el pedido.
 
-**Estado:** Pendiente de validación conjunta.
+**Estado:** SUPERADA en entorno local.
 
 ---
 
@@ -325,7 +325,7 @@ del producto o pedido relacionados.
 - El albarán se genera correctamente.
 - Los productos y cantidades coinciden con el pedido.
 
-**Estado:** Pendiente de validación conjunta.
+**Estado:** SUPERADA en entorno local.
 
 ## 11. Despliegue público
 
