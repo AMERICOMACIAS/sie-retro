@@ -70,13 +70,41 @@ automáticamente mediante GitHub.
 
 ## Estado actual
 
-WordPress y WooCommerce instalados en el equipo de Américo.
-Repositorio publicado e invitaciones enviadas a los compañeros.
+El prototipo ESRETRO dispone actualmente de un catálogo de ocho
+productos configurados en WooCommerce, incluyendo productos simples
+y productos con variantes.
 
-Pendientes: catálogo, configuración de compra, pago simulado,
-factura de prueba, eventos, adaptaciones, pruebas y despliegue.
+Se ha configurado el proceso de compra con carrito, checkout,
+IVA simulado del 21 %, envío estándar de 4,99 € y envío gratuito
+para pedidos de 100 € o más.
 
-La instalación todavía no constituye una tienda terminada.
+El proyecto incluye una pasarela de pago simulada propia que no
+realiza cobros reales. Los pedidos se almacenan en WooCommerce y
+pueden consultarse desde el área de administración.
+
+También se ha implementado un sistema propio de trazabilidad que
+registra eventos como:
+
+- `product.viewed`
+- `cart.item_added`
+- `checkout.started`
+- `order.created`
+- `payment.simulated`
+- `support.requested`
+
+Los eventos pueden consultarse y filtrarse desde una pantalla propia
+de administración de ESRETRO.
+
+El formulario de soporte permite registrar incidencias asociadas
+opcionalmente a un pedido existente.
+
+El código común del proyecto se integra mediante ramas y Pull Requests
+en GitHub. Cada integrante mantiene una instalación local independiente
+de WordPress y WooCommerce.
+
+Quedan pendientes las pruebas finales del flujo completo, la revisión
+de factura y albarán, el despliegue público en DonDominio y la
+preparación de la memoria y el vídeo de entrega.
 
 ## Incidencias conocidas
 
