@@ -31,15 +31,18 @@ Estas reglas definen el comportamiento esperado del proceso de compra y servirá
 
 ## 5. Impuestos y envío
 
-Propuesta pendiente de aprobación por el grupo:
+Las condiciones comerciales utilizadas en el prototipo son:
 
 - Moneda: euro (EUR).
 - País de destino de las pruebas: España.
 - IVA simulado: 21 %.
+- Los precios del catálogo se introducen y muestran con IVA incluido.
 - Envío estándar: 4,99 €.
-- Envío gratuito para pedidos que alcancen 100 €.
+- Envío gratuito para pedidos de 100 € o más.
 
-Antes de implementar estas condiciones, el grupo debe decidir si los precios del catálogo incluyen IVA y cómo se aplican los umbrales de envío gratuito.
+WooCommerce calcula estos importes durante el carrito y el checkout.
+Cuando el pedido alcanza el umbral de 100 €, se aplica directamente
+el envío gratuito en lugar de mantener seleccionado el envío estándar.
 
 ## 6. Pago simulado
 
@@ -79,6 +82,5 @@ Los eventos deben permitir reconstruir el recorrido de una compra de prueba.
 ## 10. Validación de las reglas
 
 Cada regla deberá comprobarse mediante pruebas reproducibles. Los resultados reales de esas pruebas se documentarán por separado.
-
-Las reglas comerciales propuestas en el apartado 5 no se considerarán definitivas hasta que las apruebe el grupo.
+Las reglas comerciales del apartado 5 han sido configuradas y comprobadas mediante pedidos de prueba en el entorno local.
 
