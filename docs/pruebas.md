@@ -40,7 +40,7 @@ en DonDominio.
 - El precio y el stock son coherentes.
 - Se registra un evento `product.viewed`.
 
-**Estado:** Pendiente de validación final.
+**Estado:** Superada en entorno local.
 
 ---
 
@@ -78,8 +78,7 @@ en DonDominio.
 - La cantidad es correcta.
 - Se registra `cart.item_added`.
 
-**Estado:** Comprobado durante el desarrollo.
-
+**Estado:** Superada en entorno local.
 ---
 
 ### P04 — Modificar cantidades y eliminar productos
@@ -115,7 +114,7 @@ en DonDominio.
 - Los precios mostrados incluyen IVA.
 - El total calculado es coherente.
 
-**Estado:** Comprobado durante la configuración.
+**Estado:** Superada en entorno local.
 
 ---
 
@@ -130,7 +129,7 @@ en DonDominio.
 
 - Se aplica un coste de envío de 4,99 €.
 
-**Estado:** Comprobado durante la configuración.
+**Estado:** Superada en entorno local.
 
 ---
 
@@ -146,7 +145,7 @@ en DonDominio.
 - Se aplica directamente el envío gratuito.
 - No se mantiene como opción activa el envío estándar de 4,99 €.
 
-**Estado:** Comprobado durante la configuración.
+**Estado:** Superada en entorno local.
 
 ## 6. Checkout y pago
 
@@ -199,7 +198,7 @@ en DonDominio.
 - Se registra `payment.simulated`.
 - El pedido pasa a un estado coherente con un pago aceptado.
 
-**Estado:** Comprobado durante el desarrollo.
+**Estado:** Superada en entorno local.
 
 ## 7. Pedidos
 
@@ -217,7 +216,7 @@ en DonDominio.
 - El pedido contiene productos, cantidades, impuestos, envío y total.
 - Se registra `order.created`.
 
-**Estado:** Comprobado durante el desarrollo.
+**Estado:** Superada en entorno local.
 
 ---
 
@@ -233,7 +232,7 @@ en DonDominio.
 
 - El stock disminuye según la cantidad comprada.
 
-**Estado:** Comprobado durante las pruebas del proceso de compra.
+**Estado:** Superada en entorno local.
 
 ## 8. Trazabilidad
 
@@ -258,7 +257,7 @@ Deben poder localizarse los eventos:
 Cuando corresponda, los eventos deben incluir los identificadores
 del producto o pedido relacionados.
 
-**Estado:** Comprobado durante el desarrollo.
+**Estado:** Superada en entorno local.
 
 ## 9. Soporte
 
@@ -278,7 +277,7 @@ del producto o pedido relacionados.
 - Se registra `support.requested`.
 - Si se proporciona un pedido, queda asociado al evento.
 
-**Estado:** Comprobado durante el desarrollo.
+**Estado:** Superada en entorno local.
 
 ---
 
