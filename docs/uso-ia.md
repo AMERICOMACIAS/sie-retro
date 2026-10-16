@@ -17,7 +17,7 @@ ChatGPT.
 Instrucciones de instalación, archivo .gitignore, comandos de Git
 y contenido inicial del README.
 
-Todavía no se ha desarrollado código funcional propio de la tienda.
+En ese momento todavía no se había desarrollado código funcional propio de la tienda.
 
 ### Incidencias y correcciones
 Se creó el repositorio antes de añadir .gitignore.
@@ -58,3 +58,113 @@ a los tres equipos salvo que se hayan producido en todos ellos.
 ### Pendiente de validar
 Confirmación de las versiones y comprobaciones de los otros dos equipos,
 compra completa, eventos, factura de prueba y funcionamiento en DonDominio.
+
+## Sesiones del 9 al 16 de octubre de 2026
+
+### Herramienta
+ChatGPT.
+
+### Tareas asistidas
+Durante esta fase se utilizó ChatGPT como apoyo para:
+
+- Diseñar e implementar el plugin propio ESRETRO.
+- Registrar eventos persistentes relacionados con el proceso de compra.
+- Crear una vista administrativa para consultar y filtrar eventos.
+- Implementar y revisar el formulario de soporte.
+- Integrar la pasarela de pago simulada con WooCommerce.
+- Adaptar el pago simulado al checkout por bloques de WooCommerce.
+- Registrar los eventos `product.viewed`, `cart.item_added`,
+  `checkout.started`, `order.created`, `payment.simulated`
+  y `support.requested`.
+- Revisar el funcionamiento de productos simples y variables.
+- Configurar y comprobar IVA, costes de envío y envío gratuito.
+- Organizar el trabajo colaborativo mediante ramas,
+  commits y Pull Requests en GitHub.
+- Resolver problemas surgidos durante la integración del código
+  desarrollado por los tres integrantes.
+- Preparar pruebas reproducibles del recorrido completo de compra.
+
+### Partes relevantes asistidas
+
+La IA ayudó a proponer estructuras y fragmentos de código para
+el plugin ESRETRO, especialmente en el registro de eventos,
+integración con hooks de WooCommerce, administración,
+soporte y conexión con la pasarela de pago simulada.
+
+Las propuestas no se incorporaron directamente sin comprobación.
+El grupo revisó los fragmentos, los adaptó al proyecto y realizó
+pruebas en sus instalaciones locales antes de integrarlos en `main`.
+
+También se utilizó ChatGPT para explicar el funcionamiento de Git
+y GitHub durante la integración de las ramas de los tres integrantes.
+
+### Incidencias y correcciones
+
+Durante el desarrollo se detectaron varias diferencias entre el
+comportamiento esperado y el comportamiento real de WooCommerce.
+
+Inicialmente el evento `order.created` no se registraba correctamente
+con alguno de los hooks probados para Checkout Blocks. Se realizaron
+pedidos de prueba y finalmente se comprobó que
+`woocommerce_store_api_checkout_order_processed` permitía registrar
+correctamente el evento en la instalación utilizada por el grupo.
+
+Durante esta revisión la IA propuso temporalmente utilizar otro hook.
+La recomendación se reconsideró al comparar la documentación,
+el código existente y, especialmente, los resultados de las pruebas
+realizadas por el grupo. Se mantuvo finalmente la solución que había
+demostrado funcionar en el entorno del proyecto.
+
+También se detectó que `checkout.started` podía registrarse varias
+veces al recargar o procesar la página de checkout. Se preparó una
+corrección para evitar eventos duplicados utilizando la sesión de
+WooCommerce.
+
+Durante la integración también fue necesario coordinar ramas que
+modificaban el mismo plugin. Para evitar sobrescribir trabajo,
+se adoptó el flujo rama de funcionalidad, commit, Pull Request,
+prueba por otro integrante y posterior integración en `main`.
+
+### Decisiones y acciones del grupo
+
+El grupo mantuvo instalaciones locales independientes de WordPress
+y WooCommerce. GitHub se utiliza para compartir el código propio
+y la documentación, pero no las bases de datos locales.
+
+Se decidió centralizar las funcionalidades propias en el plugin
+ESRETRO en lugar de modificar directamente WooCommerce.
+
+Las configuraciones de IVA y envío utilizadas en las pruebas son:
+
+- IVA del 21 % incluido en los precios.
+- Envío estándar de 4,99 €.
+- Envío gratuito para pedidos de 100 € o más.
+
+El pago utilizado por el proyecto es completamente simulado y
+no procesa ni almacena datos bancarios reales.
+
+### Validación realizada
+
+Se han realizado pedidos de prueba completos en más de una instalación
+local del grupo.
+
+Se ha comprobado el recorrido:
+
+`product.viewed` → `cart.item_added` → `checkout.started`
+→ `order.created` → `payment.simulated`.
+
+También se ha comprobado por separado el registro de
+`support.requested`.
+
+Los eventos pueden consultarse desde la pantalla administrativa
+propia de ESRETRO y los eventos asociados a pedidos muestran el
+identificador correspondiente.
+
+Se comprobó que el pago simulado crea el pedido y que el estado
+del pedido evoluciona de forma coherente durante el proceso.
+
+### Pendiente de validar
+
+Quedan pendientes la batería final de pruebas del proyecto integrado,
+la revisión conjunta de factura y albarán, el despliegue público
+en DonDominio y la validación completa sobre la instalación definitiva.
