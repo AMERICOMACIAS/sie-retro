@@ -70,41 +70,36 @@ automáticamente mediante GitHub.
 
 ## Estado actual
 
-El prototipo ESRETRO dispone actualmente de un catálogo de ocho
-productos configurados en WooCommerce, incluyendo productos simples
-y productos con variantes.
+SRETRO es un prototipo académico de comercio electrónico que ya se encuentra publicado en el dominio: https://www.esretro.onl/
 
-Se ha configurado el proceso de compra con carrito, checkout,
-IVA simulado del 21 %, envío estándar de 4,99 € y envío gratuito
-para pedidos de 100 € o más.
+La tienda dispone de ocho consolas retro reacondicionadas, incluyendo seis productos simples y dos productos variables: Nintendo Wii y PlayStation 1.
 
-El proyecto incluye una pasarela de pago simulada propia que no
-realiza cobros reales. Los pedidos se almacenan en WooCommerce y
-pueden consultarse desde el área de administración.
+El proceso de compra está desarrollado mediante WordPress y WooCommerce. Se han configurado las siguientes reglas comerciales:
 
-También se ha implementado un sistema propio de trazabilidad que
-registra eventos como:
+·IVA del 21 % incluido en los precios.
+·Envío estándar de 4,99 €.
+·Envío gratuito para pedidos de 100 € o más.
+·Validación de los campos obligatorios del checkout.
+·Creación de pedidos con identificador único y control de stock.
 
-- `product.viewed`
-- `cart.item_added`
-- `checkout.started`
-- `order.created`
-- `payment.simulated`
-- `support.requested`
+Se ha desarrollado un plugin propio denominado ESRETRO, que incorpora una pasarela de pago simulado sin cobros reales, un sistema de soporte y el registro de los siguientes eventos:
 
-Los eventos pueden consultarse y filtrarse desde una pantalla propia
-de administración de ESRETRO.
+·product.viewed
+·cart.item_added
+·checkout.started
+·order.created
+·payment.simulated
+·support.requested
 
-El formulario de soporte permite registrar incidencias asociadas
-opcionalmente a un pedido existente.
+Los eventos se almacenan en una tabla propia de MariaDB y pueden consultarse y filtrarse desde el panel de administración de WordPress.
 
-El código común del proyecto se integra mediante ramas y Pull Requests
-en GitHub. Cada integrante mantiene una instalación local independiente
-de WordPress y WooCommerce.
+La tienda también dispone de gestión de clientes y pedidos mediante WooCommerce. La generación de facturas y albaranes se realiza mediante una extensión adicional instalada en la plataforma.
 
-Quedan pendientes las pruebas finales del flujo completo, la revisión
-de factura y albarán, el despliegue público en DonDominio y la
-preparación de la memoria y el vídeo de entrega.
+El proyecto se ha desarrollado entre tres integrantes, utilizando instalaciones locales independientes y GitHub para integrar el código mediante ramas y Pull Requests.
+
+Validación: las pruebas funcionales locales están documentadas en docs/pruebas.md. La instalación pública ya contiene el catálogo y el plugin operativo; queda pendiente documentar la comprobación final completa del proceso de compra en DonDominio.
+
+La memoria técnica y el vídeo demostrativo forman parte de la entrega del proyecto.
 
 ## Incidencias conocidas
 
