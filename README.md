@@ -111,12 +111,10 @@ de comprobar, especialmente por su límite de memoria.
 
 ## Credenciales
 
-Cuenta de pago simulado en Paypal:
-* sb-47ni7j53365142@personal.example.com
-Contraseña de Pago Simulado:
-* wR&n)b4*
+Cuenta de pago simulado en Paypal: sb-47ni7j53365142@personal.example.com
 
-Cuenta de acceso de administración:
-admin
-Contraseña:
-Admin1234.
+Contraseña de Pago Simulado: wR&n)b4*
+
+Cuenta de acceso de administración: admin 
+
+Contraseña: Admin1234.
