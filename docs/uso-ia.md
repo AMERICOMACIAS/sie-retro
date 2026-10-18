@@ -168,3 +168,37 @@ del pedido evoluciona de forma coherente durante el proceso.
 Quedan pendientes la batería final de pruebas del proyecto integrado,
 la revisión conjunta de factura y albarán, el despliegue público
 en DonDominio y la validación completa sobre la instalación definitiva.
+
+## Sesiones del 17 y 18 de octubre de 2026
+
+### Herramienta utilizada
+ChatGPT.
+
+### Tareas asistidas
+
+Durante la fase final del proyecto hemos utilizado ChatGPT como apoyo para:
+
+- Revisar el estado general del proyecto ESRETRO.
+- Preparar y revisar la memoria técnica de la tarea.
+- Organizar los guiones de grabación del vídeo demostrativo.
+- Revisar el código y la documentación almacenados en GitHub.
+- Identificar documentación pendiente de actualizar antes de la entrega.
+- Preparar la comprobación final del funcionamiento de la tienda en DonDominio.
+
+También se ha utilizado inteligencia artificial para generar imágenes de los productos del catálogo y esquemas explicativos de la arquitectura del proyecto.
+
+### Validación del proyecto
+
+La instalación pública se encuentra disponible en https://www.esretro.onl/.
+
+El grupo ha comprobado el proceso completo de compra con la pasarela simulada ESRETRO, incluyendo el catálogo, las variantes, el carrito, el checkout, la creación del pedido, la actualización del stock y los eventos registrados.
+
+Estas comprobaciones permiten dar por superada la prueba P18 del documento `docs/pruebas.md`.
+
+### Decisiones del grupo
+
+Las respuestas y propuestas de la IA se han utilizado como orientación y se han revisado antes de aplicarlas.
+
+La configuración de WordPress, WooCommerce, el despliegue en DonDominio y las pruebas finales han sido realizados y comprobados por los integrantes del grupo.
+
+La IA ha servido como herramienta de apoyo, pero las decisiones finales se han tomado en función de las necesidades del proyecto y de los resultados obtenidos durante las pruebas.
