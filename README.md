@@ -76,20 +76,20 @@ La tienda dispone de ocho consolas retro reacondicionadas, incluyendo seis produ
 
 El proceso de compra está desarrollado mediante WordPress y WooCommerce. Se han configurado las siguientes reglas comerciales:
 
-·IVA del 21 % incluido en los precios.
-·Envío estándar de 4,99 €.
-·Envío gratuito para pedidos de 100 € o más.
-·Validación de los campos obligatorios del checkout.
-·Creación de pedidos con identificador único y control de stock.
+-IVA del 21 % incluido en los precios.
+-Envío estándar de 4,99 €.
+-Envío gratuito para pedidos de 100 € o más.
+-Validación de los campos obligatorios del checkout.
+-Creación de pedidos con identificador único y control de stock.
 
 Se ha desarrollado un plugin propio denominado ESRETRO, que incorpora una pasarela de pago simulado sin cobros reales, un sistema de soporte y el registro de los siguientes eventos:
 
-·product.viewed
-·cart.item_added
-·checkout.started
-·order.created
-·payment.simulated
-·support.requested
+-product.viewed
+-cart.item_added
+-checkout.started
+-order.created
+-payment.simulated
+-support.requested
 
 Los eventos se almacenan en una tabla propia de MariaDB y pueden consultarse y filtrarse desde el panel de administración de WordPress.
 
@@ -97,7 +97,7 @@ La tienda también dispone de gestión de clientes y pedidos mediante WooCommerc
 
 El proyecto se ha desarrollado entre tres integrantes, utilizando instalaciones locales independientes y GitHub para integrar el código mediante ramas y Pull Requests.
 
-Validación: las pruebas funcionales locales están documentadas en docs/pruebas.md. La instalación pública ya contiene el catálogo y el plugin operativo; queda pendiente documentar la comprobación final completa del proceso de compra en DonDominio.
+Validación: las pruebas funcionales P01 a P18 están documentadas en docs/pruebas.md. El proceso completo de compra se ha comprobado satisfactoriamente en https://www.esretro.onl/, incluyendo el pago simulado, los pedidos, el stock y los eventos.
 
 La memoria técnica y el vídeo demostrativo forman parte de la entrega del proyecto.
 
