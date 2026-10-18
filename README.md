@@ -111,5 +111,12 @@ de comprobar, especialmente por su límite de memoria.
 
 ## Credenciales
 
-No se incluyen contraseñas, claves ni credenciales reales.
-Cada integrante conserva su configuración local fuera de Git.
+Cuenta de pago simulado en Paypal:
+* sb-47ni7j53365142@personal.example.com
+Contraseña de Pago Simulado:
+* wR&n)b4*
+
+Cuenta de acceso de administración:
+admin
+Contraseña:
+Admin1234.
