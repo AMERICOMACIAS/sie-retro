@@ -70,7 +70,7 @@ automáticamente mediante GitHub.
 
 ## Estado actual
 
-SRETRO es un prototipo académico de comercio electrónico que ya se encuentra publicado en el dominio: https://www.esretro.onl/
+ESRETRO es un prototipo académico de comercio electrónico que ya se encuentra publicado en el dominio: https://www.esretro.onl/
 
 La tienda dispone de ocho consolas retro reacondicionadas, incluyendo seis productos simples y dos productos variables: Nintendo Wii y PlayStation 1.
 
