@@ -21,8 +21,7 @@ El proyecto utiliza:
 - Base de datos local independiente en cada equipo.
 - Código compartido mediante GitHub.
 
-La instalación pública definitiva se realizará posteriormente
-en DonDominio.
+La instalación pública definitiva se encuentra desplegada en DonDominio y es accesible desde https://www.esretro.onl/. Las pruebas P01 a P17 se realizaron en los entornos locales. La comprobación final del recorrido completo en el dominio público se recoge en la prueba P18.
 
 ## 3. Catálogo
 
@@ -40,7 +39,7 @@ en DonDominio.
 - El precio y el stock son coherentes.
 - Se registra un evento `product.viewed`.
 
-**Estado:** Superada en entorno local.
+**Estado:** superada en DonDominio
 
 ---
 
@@ -59,7 +58,7 @@ en DonDominio.
 - La variante seleccionada se conserva en el carrito.
 - Se utiliza el precio y stock correspondientes.
 
-**Estado:** SUPERADA en entorno local.
+**Estado:** superada en DonDominio
 
 ## 4. Carrito
 
@@ -78,7 +77,8 @@ en DonDominio.
 - La cantidad es correcta.
 - Se registra `cart.item_added`.
 
-**Estado:** Superada en entorno local.
+**Estado:** superada en DonDominio
+
 ---
 
 ### P04 — Modificar cantidades y eliminar productos
@@ -96,7 +96,7 @@ en DonDominio.
 - No se permiten cantidades inválidas.
 - El producto puede eliminarse correctamente.
 
-**Estado:** Superada en entorno local.   
+**Estado:** superada en DonDominio
 
 ## 5. Impuestos y envío
 
@@ -114,7 +114,7 @@ en DonDominio.
 - Los precios mostrados incluyen IVA.
 - El total calculado es coherente.
 
-**Estado:** Superada en entorno local.
+**Estado:** superada en DonDominio
 
 ---
 
@@ -129,7 +129,7 @@ en DonDominio.
 
 - Se aplica un coste de envío de 4,99 €.
 
-**Estado:** Superada en entorno local.
+**Estado:** superada en DonDominio
 
 ---
 
@@ -145,7 +145,7 @@ en DonDominio.
 - Se aplica directamente el envío gratuito.
 - No se mantiene como opción activa el envío estándar de 4,99 €.
 
-**Estado:** Superada en entorno local.
+**Estado:** superada en DonDominio
 
 ## 6. Checkout y pago
 
@@ -162,7 +162,7 @@ en DonDominio.
 - Se registra `checkout.started`.
 - No debe generarse más de una vez por la misma entrada al checkout.
 
-**Estado:** Superada en entorno local.
+**Estado:** superada en DonDominio
 
 ---
 
@@ -179,7 +179,7 @@ en DonDominio.
 - El pedido no se completa.
 - WooCommerce muestra los errores correspondientes.
 
-**Estado:** SUPERADA en entorno local.
+**Estado:** superada en DonDominio
 
 ---
 
@@ -198,7 +198,7 @@ en DonDominio.
 - Se registra `payment.simulated`.
 - El pedido pasa a un estado coherente con un pago aceptado.
 
-**Estado:** Superada en entorno local.
+**Estado:** superada en DonDominio
 
 ## 7. Pedidos
 
@@ -216,7 +216,7 @@ en DonDominio.
 - El pedido contiene productos, cantidades, impuestos, envío y total.
 - Se registra `order.created`.
 
-**Estado:** Superada en entorno local.
+**Estado:** superada en DonDominio
 
 ---
 
@@ -232,7 +232,7 @@ en DonDominio.
 
 - El stock disminuye según la cantidad comprada.
 
-**Estado:** Superada en entorno local.
+**Estado:** superada en DonDominio
 
 ## 8. Trazabilidad
 
@@ -257,7 +257,7 @@ Deben poder localizarse los eventos:
 Cuando corresponda, los eventos deben incluir los identificadores
 del producto o pedido relacionados.
 
-**Estado:** Superada en entorno local.
+**Estado:** superada en DonDominio
 
 ## 9. Soporte
 
@@ -277,7 +277,7 @@ del producto o pedido relacionados.
 - Se registra `support.requested`.
 - Si se proporciona un pedido, queda asociado al evento.
 
-**Estado:** Superada en entorno local.
+**Estado:** superada en DonDominio
 
 ---
 
@@ -292,7 +292,7 @@ del producto o pedido relacionados.
 
 - El sistema no debe asociar la incidencia a un pedido inexistente.
 
-**Estado:** SUPERADA en entorno local.
+**Estado:** superada en DonDominio
 
 ## 10. Factura y albarán
 
@@ -309,7 +309,7 @@ del producto o pedido relacionados.
 - La factura se genera correctamente.
 - Productos, impuestos, envío y total coinciden con el pedido.
 
-**Estado:** SUPERADA en entorno local.
+**Estado:** superada en DonDominio
 
 ---
 
@@ -325,7 +325,7 @@ del producto o pedido relacionados.
 - El albarán se genera correctamente.
 - Los productos y cantidades coinciden con el pedido.
 
-**Estado:** SUPERADA en entorno local.
+**Estado:** superada en DonDominio
 
 ## 11. Despliegue público
 
@@ -333,16 +333,25 @@ del producto o pedido relacionados.
 
 **Procedimiento**
 
-1. Acceder a la instalación pública.
-2. Realizar una compra completa con datos ficticios.
-3. Revisar pedido, stock y eventos desde administración.
+1. Acceder a https://www.esretro.onl/.
+2. Comprobar que aparecen los ocho productos del catálogo y que pueden seleccionarse las variantes.
+3. Añadir productos al carrito y comprobar los importes.
+4. Acceder al checkout y seleccionar la pasarela de pago simulado ESRETRO.
+5. Completar un pedido utilizando datos ficticios.
+6. Consultar el pedido desde WooCommerce → Pedidos.
+7. Comprobar la reducción de stock y los eventos registrados desde ESRETRO → Eventos.
 
 **Resultado esperado**
 
-Todo el recorrido validado localmente debe funcionar también
-en la instalación pública definitiva.
+El recorrido completo de compra debe funcionar en DonDominio de la misma forma que en los entornos locales, sin efectuar ningún cobro real.
 
-**Estado:** Pendiente de despliegue.
+**Estado:** Instalación pública desplegada y catálogo disponible. SUPERADA.
+
+Resultado obtenido: Se ha comprobado el funcionamiento completo del proceso de compra en https://www.esretro.onl/, incluyendo la visualización de productos, selección de variantes, carrito, checkout y pago simulado ESRETRO.
+
+Tras completar la compra, se ha verificado la creación del pedido en WooCommerce, la actualización del stock y el registro de los eventos correspondientes en el panel de administración de ESRETRO.
+
+No se ha realizado ningún cobro real.
 
 ## 12. Criterio de cierre
 
