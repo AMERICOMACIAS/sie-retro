@@ -428,18 +428,20 @@ quedar diferenciadas en la documentación del proyecto.
 
 ------------------------------------------------------------------------
 
-## 10. Estado del documento
+## 10. Estado final del catálogo
 
-**Estado:** modelo de catálogo inicial definido.
+**Estado: IMPLEMENTADO Y PROBADO.**
 
-**Pendiente:**
+El catálogo de ESRETRO está terminado y publicado en https://www.esretro.onl/.
 
-1.  Crear las categorías en WooCommerce.
-2.  Crear los atributos globales.
-3.  Crear los 6 productos simples.
-4.  Crear Nintendo Wii como producto variable.
-5.  Crear PlayStation 1 como producto variable.
-6.  Introducir precios y stock.
-7.  Añadir imágenes y descripciones.
-8.  Probar las configuraciones y el comportamiento del carrito.
-9.  Documentar cualquier adaptación necesaria en el plugin `sie-retro`.
+Se han configurado los ocho productos previstos, distribuidos en las categorías Nintendo, Sega y Sony.
+
+De estos productos, seis son simples y dos son variables: Nintendo Wii y PlayStation 1. Ambos permiten seleccionar distintas configuraciones, con precios y existencias independientes.
+
+También se han incorporado los atributos de los productos, sus descripciones, precios, stock e imágenes.
+
+Durante las pruebas se ha comprobado que los productos se muestran correctamente, que las variantes pueden seleccionarse y que las cantidades se conservan en el carrito.
+
+Las imágenes se han incorporado directamente a WordPress. Por este motivo, no forman parte de los archivos versionados en GitHub.
+
+El catálogo se encuentra disponible en la instalación pública de DonDominio.
