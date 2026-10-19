@@ -108,13 +108,3 @@ Se configuró Apache para utilizar el puerto 8080.
 
 El funcionamiento en el hosting de DonDominio está pendiente
 de comprobar, especialmente por su límite de memoria.
-
-## Credenciales
-
-Cuenta de pago simulado en Paypal: sb-47ni7j53365142@personal.example.com
-
-Contraseña de Pago Simulado: wR&n)b4*
-
-Cuenta de acceso de administración: admin 
-
-Contraseña: Admin1234.
