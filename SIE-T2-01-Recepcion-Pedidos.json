@@ -1,0 +1,35 @@
+{
+  "name": "SIE-T2-01-Recepcion-Pedidos",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "esretro-pedidos-v1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0912f156-55c2-4701-940b-9d8deb205254",
+      "name": "Webhook",
+      "webhookId": "8ec78908-ef29-4a30-a6a1-1ed1c7377f78"
+    }
+  ],
+  "pinData": {},
+  "connections": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "d551be13-93a0-447b-860b-f07f9dcf1ecc",
+  "meta": {
+    "instanceId": "fd52207705fff5885c4aa6417f56572cb22be79fd0cd7eae81bc07ad8e41e921"
+  },
+  "nodeGroups": [],
+  "id": "ox9ujaSVzKULKYLJ",
+  "tags": []
+}
