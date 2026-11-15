@@ -199,8 +199,9 @@ function sie_retro_registrar_evento_carrito(
     );
 }
 
+
 /**
- * Centraliza las llamadas al registro de eventos.
+ * Centraliza el registro y envío de eventos.
  */
 function sie_retro_guardar_evento(
     $tipo,
@@ -209,22 +210,41 @@ function sie_retro_guardar_evento(
     $product_id = null
 ) {
     if (
-        class_exists( 'SIE_Retro_Events' )
-        && is_callable( array( 'SIE_Retro_Events', 'record' ) )
+        ! class_exists( 'SIE_Retro_Events' )
+        || ! is_callable( array( 'SIE_Retro_Events', 'record' ) )
     ) {
-        $datos_evento = is_array( $datos ) ? $datos : array();
-
-        if ( null !== $order_id ) {
-            $datos_evento['order_id'] = absint( $order_id );
-        }
-
-        if ( null !== $product_id ) {
-            $datos_evento['product_id'] = absint( $product_id );
-        }
-
-        SIE_Retro_Events::record( $tipo, $datos_evento );
+        return false;
     }
+
+    $datos_evento = is_array( $datos ) ? $datos : array();
+
+    if ( null !== $order_id ) {
+        $datos_evento['order_id'] = absint( $order_id );
+    }
+
+    if ( null !== $product_id ) {
+        $datos_evento['product_id'] = absint( $product_id );
+    }
+
+    // Guardar primero el evento en MariaDB.
+    $event_id = SIE_Retro_Events::record( $tipo, $datos_evento );
+
+    if ( false === $event_id ) {
+        return false;
+    }
+
+    // Por ahora, n8n solo procesa order.created.
+    if (
+        'order.created' === $tipo
+        && class_exists( 'SIE_Retro_Webhook' )
+    ) {
+        SIE_Retro_Webhook::schedule_event( $event_id );
+    }
+
+    // Devolver el identificador real del evento.
+    return $event_id;
 }
+
 
 /**
  * Añade el menú de administración de eventos.
