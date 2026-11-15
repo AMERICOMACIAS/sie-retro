@@ -16,17 +16,254 @@
       "id": "0912f156-55c2-4701-940b-9d8deb205254",
       "name": "Webhook",
       "webhookId": "8ec78908-ef29-4a30-a6a1-1ed1c7377f78"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst payload = $input.first().json.body ?? {};\nconst pedido = payload.data ?? {};\nconst cliente = pedido.customer ?? {};\nconst items = Array.isArray(pedido.items) ? pedido.items : [];\nconst errores = [];\n\n// Funciones auxiliares\nconst idValido = (id) => Number.isInteger(id) && id > 0;\n\nconst importe = (valor) => {\n  if (typeof valor !== 'string' ||\n      !/^\\d+(\\.\\d{1,2})?$/.test(valor.trim())) {\n    return null;\n  }\n  return Number(valor);\n};\n\n// 1. Validar el contrato JSON v1.0\nif (payload.schema_version !== '1.0') {\n  errores.push('schema_version incorrecta');\n}\n\nif (!idValido(payload.event_id)) {\n  errores.push('event_id no válido');\n}\n\nif (payload.event_type !== 'order.created') {\n  errores.push('event_type no válido');\n}\n\nif (!payload.occurred_at ||\n    Number.isNaN(Date.parse(payload.occurred_at))) {\n  errores.push('Fecha no válida');\n}\n\nif (!idValido(payload.order_id)) {\n  errores.push('order_id no válido');\n}\n\n// 2. Validar los datos del pedido\nif (!pedido.status) {\n  errores.push('Falta estado del pedido');\n}\n\nif (typeof pedido.currency !== 'string' ||\n    !/^[A-Z]{3}$/.test(pedido.currency)) {\n  errores.push('Moneda no válida');\n}\n\nconst total = importe(pedido.total);\nif (total === null) {\n  errores.push('Importe total no válido');\n}\n\n// 3. Validar el cliente (admite invitados)\nif (cliente.id !== null && !idValido(cliente.id)) {\n  errores.push('ID de cliente no válido');\n}\n\nif (typeof cliente.name !== 'string' ||\n    !cliente.name.trim()) {\n  errores.push('Falta nombre del cliente');\n}\n\nif (typeof cliente.email !== 'string' ||\n    !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(cliente.email)) {\n  errores.push('Email de cliente no válido');\n}\n\n// 4. Validar los productos (SKU puede estar vacío)\nif (items.length === 0) {\n  errores.push('Pedido sin productos');\n}\n\nfor (const item of items) {\n  if (!idValido(item?.product_id)) {\n    errores.push('product_id no válido');\n  }\n\n  if (typeof item?.sku !== 'string') {\n    errores.push('SKU no válido');\n  }\n\n  if (typeof item?.name !== 'string' || !item.name.trim()) {\n    errores.push('Nombre de producto no válido');\n  }\n\n  if (!idValido(item?.quantity)) {\n    errores.push('Cantidad no válida');\n  }\n\n  if (importe(item?.total) === null) {\n    errores.push('Total de línea no válido');\n  }\n}\n\n// 5. Preparar los campos para Google Sheets\nconst items_summary = items\n  .map(item => `${item?.name ?? 'Producto'} x${item?.quantity ?? 0}`)\n  .join(', ');\n\nreturn [{\n  json: {\n    valid: errores.length === 0,\n    errors: errores,\n    schema_version: payload.schema_version ?? null,\n    event_id: payload.event_id ?? null,\n    event_type: payload.event_type ?? null,\n    occurred_at: payload.occurred_at ?? null,\n    order_id: payload.order_id ?? null,\n    order_number: pedido.order_number ?? null,\n    status: pedido.status ?? null,\n    currency: pedido.currency ?? null,\n    total: total,\n    customer_id: cliente.id ?? null,\n    customer_name: cliente.name ?? null,\n    customer_email: cliente.email ?? null,\n    payment_method: pedido.payment_method ?? null,\n    items_summary: items_summary,\n    items: items.map(item => ({\n      product_id: item?.product_id ?? null,\n      sku: item?.sku ?? '',\n      name: item?.name ?? null,\n      quantity: item?.quantity ?? null,\n      total: importe(item?.total)\n    }))\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "e13777fd-d5d4-4fbc-8906-3e2f776be257",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "e23b0464-c315-4023-a468-906a656e54b8",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        448,
+        0
+      ],
+      "id": "50156628-fd4a-4194-87e7-d34c638dae9d",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Pedidos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "order_id": "={{ $json.order_id }}",
+            "customer_name": "={{ $json.customer_name }}",
+            "customer_email": "={{ $json.customer_email }}",
+            "order_date": "={{ $json.occurred_at }}",
+            "total": "={{ $json.total }}",
+            "currency": "={{ $json.currency }}",
+            "status": "={{ $json.status }}",
+            "payment_method": "={{ $json.payment_method ?? '' }}",
+            "items_summary": "={{ $json.items_summary }}",
+            "event_id": "={{ $json.event_id }}",
+            "last_updated": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [
+            "order_id"
+          ],
+          "schema": [
+            {
+              "id": "order_id",
+              "displayName": "order_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "customer_name",
+              "displayName": "customer_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "customer_email",
+              "displayName": "customer_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "order_date",
+              "displayName": "order_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total",
+              "displayName": "total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "payment_method",
+              "displayName": "payment_method",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "items_summary",
+              "displayName": "items_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "event_id",
+              "displayName": "event_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_updated",
+              "displayName": "last_updated",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        672,
+        -24.400001525878906
+      ],
+      "id": "fb12ed89-dc09-41e5-9e01-d0dec1df78d5",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "wR9IFA8zRedsHpK4",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
   "pinData": {},
-  "connections": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
   "active": false,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "d551be13-93a0-447b-860b-f07f9dcf1ecc",
+  "versionId": "ba800fc8-022e-448a-8504-8c1b41095c58",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "fd52207705fff5885c4aa6417f56572cb22be79fd0cd7eae81bc07ad8e41e921"
   },
   "nodeGroups": [],
