@@ -77,25 +77,67 @@ function sie_retro_registrar_pasarela( $gateways ) {
     return $gateways;
 }
 
+
 /**
- * Registra el evento order.created.
+ * Registra el evento order.created con los datos completos del pedido.
  */
 function sie_retro_evento_pedido_creado( $order ) {
     if ( ! $order instanceof WC_Order ) {
         return;
     }
 
+    // Datos del cliente, incluyendo clientes invitados.
+    $customer_id = $order->get_customer_id();
+
+    $customer_name = trim(
+        $order->get_billing_first_name() . ' '
+        . $order->get_billing_last_name()
+    );
+
+    $customer = array(
+        'id'    => $customer_id ? (int) $customer_id : null,
+        'name'  => $customer_name,
+        'email' => $order->get_billing_email(),
+    );
+
+    // Obtener los artículos del pedido.
+    $items = array();
+
+    foreach ( $order->get_items( 'line_item' ) as $item ) {
+        $product = $item->get_product();
+
+        $items[] = array(
+            'product_id' => (int) $item->get_product_id(),
+            'name'       => $item->get_name(),
+            'sku'        => $product ? $product->get_sku() : '',
+            'quantity'   => 0 + $item->get_quantity(),
+            'total'      => wc_format_decimal(
+                $item->get_total(),
+                wc_get_price_decimals()
+            ),
+        );
+    }
+
+    // Datos del pedido según el contrato JSON v1.0.
+    $datos = array(
+        'order_number' => (string) $order->get_order_number(),
+        'status'       => $order->get_status(),
+        'currency'     => $order->get_currency(),
+        'total'        => wc_format_decimal(
+            $order->get_total(),
+            wc_get_price_decimals()
+        ),
+        'customer'     => $customer,
+        'items'        => $items,
+    );
+
     sie_retro_guardar_evento(
         'order.created',
-        array(
-            'total'  => $order->get_total(),
-            'moneda' => $order->get_currency(),
-            'estado' => $order->get_status(),
-            'origen' => current_filter(),
-        ),
+        $datos,
         $order->get_id()
     );
 }
+
 
 /**
  * Registra payment.simulated cuando la pasarela emite su hook.
