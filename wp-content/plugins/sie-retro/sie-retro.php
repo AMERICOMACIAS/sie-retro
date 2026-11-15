@@ -78,11 +78,22 @@ function sie_retro_registrar_pasarela( $gateways ) {
 }
 
 
+
 /**
- * Registra el evento order.created con los datos completos del pedido.
+ * Registra order.created una sola vez por pedido.
  */
 function sie_retro_evento_pedido_creado( $order ) {
     if ( ! $order instanceof WC_Order ) {
+        return;
+    }
+
+    // Evitar generar otro evento para el mismo pedido.
+    $existing_event_id = $order->get_meta(
+        '_sie_retro_order_created_event_id',
+        true
+    );
+
+    if ( $existing_event_id ) {
         return;
     }
 
@@ -118,7 +129,6 @@ function sie_retro_evento_pedido_creado( $order ) {
         );
     }
 
-    // Datos del pedido según el contrato JSON v1.0.
     $datos = array(
         'order_number' => (string) $order->get_order_number(),
         'status'       => $order->get_status(),
@@ -131,12 +141,24 @@ function sie_retro_evento_pedido_creado( $order ) {
         'items'        => $items,
     );
 
-    sie_retro_guardar_evento(
+    // Registrar el evento y recuperar su ID real.
+    $event_id = sie_retro_guardar_evento(
         'order.created',
         $datos,
         $order->get_id()
     );
+
+    // Marcar el pedido solo si el registro ha tenido éxito.
+    if ( $event_id ) {
+        $order->update_meta_data(
+            '_sie_retro_order_created_event_id',
+            absint( $event_id )
+        );
+
+        $order->save();
+    }
 }
+
 
 
 /**
