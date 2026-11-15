@@ -5,6 +5,7 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "esretro-pedidos-v1",
+        "authentication": "headerAuth",
         "options": {}
       },
       "type": "n8n-nodes-base.webhook",
@@ -15,7 +16,13 @@
       ],
       "id": "0912f156-55c2-4701-940b-9d8deb205254",
       "name": "Webhook",
-      "webhookId": "8ec78908-ef29-4a30-a6a1-1ed1c7377f78"
+      "webhookId": "8ec78908-ef29-4a30-a6a1-1ed1c7377f78",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "4zi6ymlHyv7eiLr0",
+          "name": "Header Auth account"
+        }
+      }
     },
     {
       "parameters": {
@@ -515,7 +522,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "f1860651-4e58-49fe-8654-df2046689ae0",
+  "versionId": "ef173b53-73e6-4195-93ad-a97d580e67ec",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "fd52207705fff5885c4aa6417f56572cb22be79fd0cd7eae81bc07ad8e41e921"
