@@ -23,7 +23,11 @@ function sie_retro_inicializar_plugin() {
     require_once __DIR__ . '/includes/class-sie-retro-events.php';
     require_once __DIR__ . '/includes/class-sie-retro-simulated-gateway.php';
     require_once __DIR__ . '/includes/class-sie-retro-support.php';
+    require_once __DIR__ . '/includes/class-sie-retro-webhook.php';
 
+    if ( class_exists( 'SIE_Retro_Webhook' ) ) {
+        SIE_Retro_Webhook::init();
+    }
     // Registro de pedidos en el checkout por bloques.
     add_action(
         'woocommerce_store_api_checkout_order_processed',
