@@ -33,25 +33,45 @@ if ( ! class_exists( 'SIE_Retro_Webhook' ) ) {
          *
          * @param int $event_id Identificador del evento en MariaDB.
          */
-        public static function schedule_event( $event_id ) {
-            $event_id = absint( $event_id );
+        
+/**
+ * Programa el envío de un evento.
+ *
+ * @param int $event_id Identificador del evento en MariaDB.
+ */
+public static function schedule_event( $event_id ) {
+    $event_id = absint( $event_id );
 
-            if ( ! $event_id ) {
-                return false;
-            }
+    if ( ! $event_id ) {
+        return false;
+    }
 
-            $args = array( $event_id, 1 );
+    $args = array( $event_id, 1 );
 
-            if ( ! wp_next_scheduled( self::CRON_HOOK, $args ) ) {
-                return wp_schedule_single_event(
-                    time() + 5,
-                    self::CRON_HOOK,
-                    $args
-                );
-            }
+    // Evitar programar dos veces el mismo primer intento.
+    if ( wp_next_scheduled( self::CRON_HOOK, $args ) ) {
+        return true;
+    }
 
-            return true;
-        }
+    $scheduled = wp_schedule_single_event(
+        time() + 5,
+        self::CRON_HOOK,
+        $args
+    );
+
+    if ( is_wp_error( $scheduled ) || false === $scheduled ) {
+        self::log(
+            'No se pudo programar el envío mediante WP-Cron.',
+            $event_id,
+            1
+        );
+
+        return false;
+    }
+
+    return true;
+}
+
 
         /**
          * Envía un evento a n8n.
