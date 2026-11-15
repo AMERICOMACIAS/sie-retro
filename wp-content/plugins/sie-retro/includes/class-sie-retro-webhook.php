@@ -265,6 +265,7 @@ public static function schedule_event( $event_id ) {
             return false;
         }
 
+        
         /**
          * Programa un nuevo intento con espera progresiva.
          */
@@ -291,16 +292,29 @@ public static function schedule_event( $event_id ) {
             $next_attempt = $attempt + 1;
             $args = array( $event_id, $next_attempt );
 
-            if ( ! wp_next_scheduled( self::CRON_HOOK, $args ) ) {
-                wp_schedule_single_event(
-                    time() + $delay,
-                    self::CRON_HOOK,
-                    $args
+            if ( wp_next_scheduled( self::CRON_HOOK, $args ) ) {
+                return true;
+            }
+
+            $scheduled = wp_schedule_single_event(
+                time() + $delay,
+                self::CRON_HOOK,
+                $args
+            );
+
+            if ( is_wp_error( $scheduled ) || false === $scheduled ) {
+                self::log(
+                    'No se pudo programar el reintento.',
+                    $event_id,
+                    $attempt
                 );
+
+                return false;
             }
 
             return true;
         }
+
 
         /**
          * Registra información técnica sin revelar el token.
