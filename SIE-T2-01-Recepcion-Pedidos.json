@@ -435,6 +435,130 @@
           "name": "Google Sheets account"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is",
+          "mode": "list",
+          "cachedResultName": "ESRETRO - Back Office",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1161320866,
+          "mode": "list",
+          "cachedResultName": "Integraciones",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is/edit#gid=1161320866"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "integration_id": "={{ 'ERR-' + $execution.id }}",
+            "event_id": "={{ $json.event_id ?? '' }}",
+            "event_type": "={{ $json.event_type ?? 'unknown' }}",
+            "source": "woocommerce",
+            "received_at": "={{ $now.toISO() }}",
+            "status": "error",
+            "execution_id": "={{ $execution.id }}",
+            "error_message": "={{ ($json.errors ?? []).join('; ') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "integration_id",
+              "displayName": "integration_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "event_id",
+              "displayName": "event_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "event_type",
+              "displayName": "event_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "received_at",
+              "displayName": "received_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "execution_id",
+              "displayName": "execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        368,
+        96
+      ],
+      "id": "c755cf24-df51-4009-9a90-830f9c27edf8",
+      "name": "Registrar evento rechazado",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "wR9IFA8zRedsHpK4",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -502,6 +626,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Registrar evento rechazado",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -522,7 +653,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "ef173b53-73e6-4195-93ad-a97d580e67ec",
+  "versionId": "8b400a0e-ed14-4e07-b291-2aac1bef24cc",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "fd52207705fff5885c4aa6417f56572cb22be79fd0cd7eae81bc07ad8e41e921"
