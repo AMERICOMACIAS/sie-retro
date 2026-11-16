@@ -35,6 +35,14 @@ function sie_retro_inicializar_plugin() {
         10,
         1
     );
+    // Registrar los cambios de estado de los pedidos.
+    add_action(
+        'woocommerce_order_status_changed',
+        'sie_retro_evento_estado_pedido_cambiado',
+        10,
+        4
+    );
+
     // Eventos de navegación y compra.
     add_action( 'wp', 'sie_retro_registrar_evento_checkout' );
     add_action( 'wp', 'sie_retro_registrar_evento_producto' );
@@ -159,7 +167,34 @@ function sie_retro_evento_pedido_creado( $order ) {
     }
 }
 
+/**
+ * Registra los cambios de estado de un pedido.
+ */
+function sie_retro_evento_estado_pedido_cambiado(
+    $order_id,
+    $old_status,
+    $new_status,
+    $order
+) {
+    if ( ! $order instanceof WC_Order ) {
+        $order = wc_get_order( $order_id );
+    }
 
+    if ( ! $order ) {
+        return;
+    }
+
+    $datos = array(
+        'previous_status' => sanitize_key( $old_status ),
+        'status'          => sanitize_key( $new_status ),
+    );
+
+    sie_retro_guardar_evento(
+        'order.status_changed',
+        $datos,
+        $order->get_id()
+    );
+}
 
 /**
  * Registra payment.simulated cuando la pasarela emite su hook.
@@ -297,9 +332,16 @@ function sie_retro_guardar_evento(
         return false;
     }
 
-    // Por ahora, n8n solo procesa order.created.
+    // Programar el envío de los eventos de pedidos a n8n.
     if (
-        'order.created' === $tipo
+        in_array(
+            $tipo,
+            array(
+                'order.created',
+                'order.status_changed',
+            ),
+            true
+        )
         && class_exists( 'SIE_Retro_Webhook' )
     ) {
         SIE_Retro_Webhook::schedule_event( $event_id );
