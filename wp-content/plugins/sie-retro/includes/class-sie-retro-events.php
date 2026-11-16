@@ -57,6 +57,7 @@ if ( ! class_exists( 'SIE_Retro_Events' ) ) {
                 'cart.item_added',
                 'checkout.started',
                 'order.created',
+                'order.status_changed',
                 'payment.simulated',
                 'support.requested',
                 'incident.created',
