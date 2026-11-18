@@ -99,7 +99,7 @@ if ( ! class_exists( 'SIE_Retro_Support' ) ) {
                 }
             }
 
-            if ( ! class_exists( 'SIE_Retro_Events' ) || ! is_callable( array( 'SIE_Retro_Events', 'record' ) ) ) {
+            if ( ! function_exists( 'sie_retro_guardar_evento' ) ) {
                 self::redirect_with_status( 'error' );
             }
 
@@ -108,12 +108,10 @@ if ( ! class_exists( 'SIE_Retro_Support' ) ) {
                 'message' => $message,
             );
 
-            $recorded = SIE_Retro_Events::record(
+            $recorded = sie_retro_guardar_evento(
                 'support.requested',
-                array_merge(
-                    $event_data,
-                    $order_id ? array( 'order_id' => $order_id ) : array()
-                )
+                $event_data,
+                $order_id ? $order_id : null
             );
 
             if ( false === $recorded ) {

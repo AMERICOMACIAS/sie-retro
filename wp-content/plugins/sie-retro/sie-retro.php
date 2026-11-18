@@ -339,6 +339,7 @@ function sie_retro_guardar_evento(
             array(
                 'order.created',
                 'order.status_changed',
+                'support.requested',
             ),
             true
         )

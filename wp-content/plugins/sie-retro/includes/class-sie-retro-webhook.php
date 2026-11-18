@@ -89,13 +89,10 @@ public static function schedule_event( $event_id ) {
                 return false;
             }
 
-            // La configuración se define fuera del repositorio.
-            if (
-                ! defined( 'SIE_RETRO_N8N_WEBHOOK_URL' )
-                || ! defined( 'SIE_RETRO_N8N_TOKEN' )
-            ) {
+            // La autenticación se configura fuera del repositorio.
+            if ( ! defined( 'SIE_RETRO_N8N_TOKEN' ) ) {
                 self::log(
-                    'Falta configurar la URL o el token de n8n.',
+                    'Falta configurar el token de n8n.',
                     $event_id,
                     $attempt
                 );
@@ -103,25 +100,21 @@ public static function schedule_event( $event_id ) {
                 return false;
             }
 
-            $url   = SIE_RETRO_N8N_WEBHOOK_URL;
             $token = SIE_RETRO_N8N_TOKEN;
 
-            // Solo permitimos conexiones HTTPS.
+            // Comprobar que el token está correctamente configurado.
             if (
-                ! is_string( $url )
-                || 'https' !== wp_parse_url( $url, PHP_URL_SCHEME )
-                || ! is_string( $token )
+                ! is_string( $token )
                 || '' === trim( $token )
             ) {
                 self::log(
-                    'La configuración de n8n no es válida.',
+                    'El token de n8n no es válido.',
                     $event_id,
                     $attempt
                 );
 
                 return false;
             }
-
             // Recuperar el evento original de MariaDB.
             $tabla = SIE_Retro_Events::table_name();
 
@@ -141,6 +134,65 @@ public static function schedule_event( $event_id ) {
 
                 return false;
             }
+
+            // Seleccionar el webhook según el tipo de evento.
+switch ( $evento->event_type ) {
+
+    case 'order.created':
+    case 'order.status_changed':
+
+        if ( ! defined( 'SIE_RETRO_N8N_WEBHOOK_URL' ) ) {
+            self::log(
+                'Falta configurar el webhook de pedidos.',
+                $event_id,
+                $attempt
+            );
+
+            return false;
+        }
+
+        $url = SIE_RETRO_N8N_WEBHOOK_URL;
+        break;
+
+    case 'support.requested':
+
+        if ( ! defined( 'SIE_RETRO_N8N_SUPPORT_WEBHOOK_URL' ) ) {
+            self::log(
+                'Falta configurar el webhook de incidencias.',
+                $event_id,
+                $attempt
+            );
+
+            return false;
+        }
+
+        $url = SIE_RETRO_N8N_SUPPORT_WEBHOOK_URL;
+        break;
+
+    default:
+
+        self::log(
+            'Tipo de evento no admitido para el envío a n8n.',
+            $event_id,
+            $attempt
+        );
+
+        return false;
+}
+
+// Validar la URL seleccionada.
+if (
+    ! is_string( $url )
+    || 'https' !== wp_parse_url( $url, PHP_URL_SCHEME )
+) {
+    self::log(
+        'La URL del webhook no es válida.',
+        $event_id,
+        $attempt
+    );
+
+    return false;
+}
 
             $datos = array();
 
