@@ -81,7 +81,9 @@ if ( ! class_exists( 'SIE_Retro_Support' ) ) {
                 self::redirect_with_status( 'error' );
             }
 
-            $order_id = isset( $_POST['order_id'] ) ? absint( $_POST['order_id'] ) : 0;
+            $order_id = isset( $_POST['order_id'] )
+                ? absint( wp_unslash( $_POST['order_id'] ) )
+                : 0;
             $subject  = isset( $_POST['subject'] )
                 ? sanitize_text_field( wp_unslash( $_POST['subject'] ) )
                 : '';
