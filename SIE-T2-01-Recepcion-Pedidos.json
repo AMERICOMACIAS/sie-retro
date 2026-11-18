@@ -1,0 +1,1164 @@
+{
+  "name": "SIE-T2-01-Recepcion-Pedidos",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "esretro-pedidos-v1",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        -240,
+        0
+      ],
+      "id": "0912f156-55c2-4701-940b-9d8deb205254",
+      "name": "Webhook",
+      "webhookId": "8ec78908-ef29-4a30-a6a1-1ed1c7377f78",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "4zi6ymlHyv7eiLr0",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "6ba05bed-8c5e-407f-ac6e-53b06e7820e0",
+              "leftValue": "={{ $json.event_id === undefined }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        800,
+        -112
+      ],
+      "id": "f2b41f09-dc85-46ad-99a3-27bb5628d0ec",
+      "name": "¿Evento nuevo?"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: $('Validar pedido creado').first().json\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        -256
+      ],
+      "id": "e07ce0f1-0ee0-4251-b3bb-fb5ba62093c0",
+      "name": "Recuperar datos del pedido."
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is",
+          "mode": "list",
+          "cachedResultName": "ESRETRO - Back Office",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1161320866,
+          "mode": "list",
+          "cachedResultName": "Integraciones",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is/edit#gid=1161320866"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "integration_id": "={{ 'INT-' + $('Webhook').first().json.body.event_id }} ",
+            "event_id": "={{ $('Webhook').first().json.body.event_id }}",
+            "event_type": "={{ $('Webhook').first().json.body.event_type }}",
+            "source": "woocommerce",
+            "received_at": "={{ $now.toISO() }}",
+            "status": "success",
+            "execution_id": "={{ $execution.id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "integration_id",
+              "displayName": "integration_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "event_id",
+              "displayName": "event_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "event_type",
+              "displayName": "event_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "received_at",
+              "displayName": "received_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "execution_id",
+              "displayName": "execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1840,
+        -64
+      ],
+      "id": "ab410f37-5597-4281-b4d0-f7907182d74c",
+      "name": "Registrar evento procesado.",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "wR9IFA8zRedsHpK4",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Pedidos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "order_id": "={{ $json.order_id }}",
+            "customer_name": "={{ $json.customer_name }}",
+            "customer_email": "={{ $json.customer_email }}",
+            "order_date": "={{ $json.occurred_at }}",
+            "total": "={{ $json.total }}",
+            "currency": "={{ $json.currency }}",
+            "status": "={{ $json.status }}",
+            "payment_method": "={{ $json.payment_method ?? '' }}",
+            "items_summary": "={{ $json.items_summary }}",
+            "event_id": "={{ $json.event_id }}",
+            "last_updated": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [
+            "order_id"
+          ],
+          "schema": [
+            {
+              "id": "order_id",
+              "displayName": "order_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "customer_name",
+              "displayName": "customer_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "customer_email",
+              "displayName": "customer_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "order_date",
+              "displayName": "order_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total",
+              "displayName": "total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "payment_method",
+              "displayName": "payment_method",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "items_summary",
+              "displayName": "items_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "event_id",
+              "displayName": "event_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_updated",
+              "displayName": "last_updated",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1568,
+        -192
+      ],
+      "id": "fb12ed89-dc09-41e5-9e01-d0dec1df78d5",
+      "name": "Actualizar pedidos",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "wR9IFA8zRedsHpK4",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1161320866,
+          "mode": "list",
+          "cachedResultName": "Integraciones",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is/edit#gid=1161320866"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "event_id",
+              "lookupValue": "={{ $json.event_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        640,
+        -112
+      ],
+      "id": "9c1c9880-ec9e-472f-a668-b2f637da5c62",
+      "name": "Consultar eventos procesados",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "wR9IFA8zRedsHpK4",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is",
+          "mode": "list",
+          "cachedResultName": "ESRETRO - Back Office",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1161320866,
+          "mode": "list",
+          "cachedResultName": "Integraciones",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is/edit#gid=1161320866"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "integration_id": "={{ 'ERR-' + $execution.id }}",
+            "event_id": "={{ $json.event_id ?? '' }}",
+            "event_type": "={{ $json.event_type ?? 'unknown' }}",
+            "source": "woocommerce",
+            "received_at": "={{ $now.toISO() }}",
+            "status": "error",
+            "execution_id": "={{ $execution.id }}",
+            "error_message": "={{ ($json.errors ?? []).join('; ') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "integration_id",
+              "displayName": "integration_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "event_id",
+              "displayName": "event_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "event_type",
+              "displayName": "event_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "received_at",
+              "displayName": "received_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "execution_id",
+              "displayName": "execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        640,
+        80
+      ],
+      "id": "c755cf24-df51-4009-9a90-830f9c27edf8",
+      "name": "Registrar evento rechazado",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "wR9IFA8zRedsHpK4",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.event_type }}",
+                    "rightValue": "order.created",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "2d70e2eb-e921-4c3d-aa7f-e701b5172aa1"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Pedido creado"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "37cae9db-3adb-47f9-ae2d-afd79539a456",
+                    "leftValue": "={{ $json.body.event_type }}",
+                    "rightValue": "order.status_changed",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Estado cambiado"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.5,
+      "position": [
+        -16,
+        0
+      ],
+      "id": "8fa09d38-6d81-4fc9-b1ff-cbafd8e016e4",
+      "name": "Enrutar tipo de evento"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst payload = $input.first().json.body ?? {};\nconst pedido = payload.data ?? {};\nconst cliente = pedido.customer ?? {};\nconst items = Array.isArray(pedido.items) ? pedido.items : [];\nconst errores = [];\n\n// Funciones auxiliares\nconst idValido = (id) => Number.isInteger(id) && id > 0;\n\nconst importe = (valor) => {\n  if (typeof valor !== 'string' ||\n      !/^\\d+(\\.\\d{1,2})?$/.test(valor.trim())) {\n    return null;\n  }\n  return Number(valor);\n};\n\n// 1. Validar el contrato JSON v1.0\nif (payload.schema_version !== '1.0') {\n  errores.push('schema_version incorrecta');\n}\n\nif (!idValido(payload.event_id)) {\n  errores.push('event_id no válido');\n}\n\nif (payload.event_type !== 'order.created') {\n  errores.push('event_type no válido');\n}\n\nif (!payload.occurred_at ||\n    Number.isNaN(Date.parse(payload.occurred_at))) {\n  errores.push('Fecha no válida');\n}\n\nif (!idValido(payload.order_id)) {\n  errores.push('order_id no válido');\n}\n\n// 2. Validar los datos del pedido\nif (!pedido.status) {\n  errores.push('Falta estado del pedido');\n}\n\nif (typeof pedido.currency !== 'string' ||\n    !/^[A-Z]{3}$/.test(pedido.currency)) {\n  errores.push('Moneda no válida');\n}\n\nconst total = importe(pedido.total);\nif (total === null) {\n  errores.push('Importe total no válido');\n}\n\n// 3. Validar el cliente (admite invitados)\nif (cliente.id !== null && !idValido(cliente.id)) {\n  errores.push('ID de cliente no válido');\n}\n\nif (typeof cliente.name !== 'string' ||\n    !cliente.name.trim()) {\n  errores.push('Falta nombre del cliente');\n}\n\nif (typeof cliente.email !== 'string' ||\n    !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(cliente.email)) {\n  errores.push('Email de cliente no válido');\n}\n\n// 4. Validar los productos (SKU puede estar vacío)\nif (items.length === 0) {\n  errores.push('Pedido sin productos');\n}\n\nfor (const item of items) {\n  if (!idValido(item?.product_id)) {\n    errores.push('product_id no válido');\n  }\n\n  if (typeof item?.sku !== 'string') {\n    errores.push('SKU no válido');\n  }\n\n  if (typeof item?.name !== 'string' || !item.name.trim()) {\n    errores.push('Nombre de producto no válido');\n  }\n\n  if (!idValido(item?.quantity)) {\n    errores.push('Cantidad no válida');\n  }\n\n  if (importe(item?.total) === null) {\n    errores.push('Total de línea no válido');\n  }\n}\n\n// 5. Preparar los campos para Google Sheets\nconst items_summary = items\n  .map(item => `${item?.name ?? 'Producto'} x${item?.quantity ?? 0}`)\n  .join(', ');\n\nreturn [{\n  json: {\n    valid: errores.length === 0,\n    errors: errores,\n    schema_version: payload.schema_version ?? null,\n    event_id: payload.event_id ?? null,\n    event_type: payload.event_type ?? null,\n    occurred_at: payload.occurred_at ?? null,\n    order_id: payload.order_id ?? null,\n    order_number: pedido.order_number ?? null,\n    status: pedido.status ?? null,\n    currency: pedido.currency ?? null,\n    total: total,\n    customer_id: cliente.id ?? null,\n    customer_name: cliente.name ?? null,\n    customer_email: cliente.email ?? null,\n    payment_method: pedido.payment_method ?? null,\n    items_summary: items_summary,\n    items: items.map(item => ({\n      product_id: item?.product_id ?? null,\n      sku: item?.sku ?? '',\n      name: item?.name ?? null,\n      quantity: item?.quantity ?? null,\n      total: importe(item?.total)\n    }))\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        -112
+      ],
+      "id": "e13777fd-d5d4-4fbc-8906-3e2f776be257",
+      "name": "Validar pedido creado"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst entrada = $input.first().json;\nconst payload = entrada.body ?? entrada;\nconst datos = payload.data ?? {};\nconst errores = [];\n\nconst idValido = (id) =>\n  Number.isInteger(id) && id > 0;\n\nconst estadoValido = (estado) =>\n  typeof estado === 'string' &&\n  /^[a-z][a-z0-9_-]*$/.test(estado);\n\n// Validar contrato común\nif (payload.schema_version !== '1.0') {\n  errores.push('schema_version incorrecta');\n}\n\nif (payload.event_type !== 'order.status_changed') {\n  errores.push('event_type incorrecto');\n}\n\nif (!idValido(payload.event_id)) {\n  errores.push('event_id no válido');\n}\n\nif (!idValido(payload.order_id)) {\n  errores.push('order_id no válido');\n}\n\nif (\n  typeof payload.occurred_at !== 'string' ||\n  Number.isNaN(Date.parse(payload.occurred_at))\n) {\n  errores.push('Fecha no válida');\n}\n\n// Validar cambio de estado\nif (!estadoValido(datos.previous_status)) {\n  errores.push('Estado anterior no válido');\n}\n\nif (!estadoValido(datos.status)) {\n  errores.push('Estado nuevo no válido');\n}\n\nif (\n  estadoValido(datos.previous_status) &&\n  estadoValido(datos.status) &&\n  datos.previous_status === datos.status\n) {\n  errores.push('No existe cambio de estado');\n}\n\n// Preparar salida\nreturn [{\n  json: {\n    valid: errores.length === 0,\n    errors: errores,\n    schema_version: payload.schema_version ?? null,\n    event_id: payload.event_id ?? null,\n    event_type: payload.event_type ?? null,\n    occurred_at: payload.occurred_at ?? null,\n    order_id: payload.order_id ?? null,\n    previous_status: datos.previous_status ?? null,\n    status: datos.status ?? null\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        96
+      ],
+      "id": "3c54c933-216e-44a4-962d-9f8fc3c96723",
+      "name": "Validar cambio de estado"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "e23b0464-c315-4023-a468-906a656e54b8",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        432,
+        -16
+      ],
+      "id": "50156628-fd4a-4194-87e7-d34c638dae9d",
+      "name": "¿Evento válido?"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Webhook').first().json.body.event_type }}",
+                    "rightValue": "order.created",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "57ece4ad-945d-45d8-9921-c0c01a0097be"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Pedido creado"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "7dc5a9f0-37e3-480e-8960-bec82b530cdd",
+                    "leftValue": "={{ $('Webhook').first().json.body.event_type }}",
+                    "rightValue": "order.status_changed",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Estado cambiado"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.5,
+      "position": [
+        1024,
+        -112
+      ],
+      "id": "b85cf7a9-51d9-42c1-b4d7-bd01b20d9bfa",
+      "name": "Enrutar evento nuevo"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is",
+          "mode": "list",
+          "cachedResultName": "ESRETRO - Back Office",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Pedidos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "order_id",
+              "lookupValue": "={{ $('Validar cambio de estado').first().json.order_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1200,
+        80
+      ],
+      "id": "30944da0-083c-4847-ae28-4d873df38646",
+      "name": "Buscar pedido existente",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "wR9IFA8zRedsHpK4",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "de072b9c-c761-45d3-b7fc-9520482c2358",
+              "leftValue": "={{ $json.order_id !== undefined && $json.row_number !== undefined }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        1360,
+        80
+      ],
+      "id": "b882eb6b-9f14-4cf5-a2ff-e387a318f320",
+      "name": "¿Pedido existe?"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is",
+          "mode": "list",
+          "cachedResultName": "ESRETRO - Back Office",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Pedidos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bhPG1Q5LsSA0lHLj2yuNpP-LfUP6LDuNASpJ8b7y1Is/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "order_id": "={{ $('Validar cambio de estado').first().json.order_id }}",
+            "status": "={{ $('Validar cambio de estado').first().json.status }}",
+            "event_id": "={{ $('Validar cambio de estado').first().json.event_id }}",
+            "last_updated": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [
+            "order_id"
+          ],
+          "schema": [
+            {
+              "id": "order_id",
+              "displayName": "order_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "customer_name",
+              "displayName": "customer_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "customer_email",
+              "displayName": "customer_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "order_date",
+              "displayName": "order_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "total",
+              "displayName": "total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "payment_method",
+              "displayName": "payment_method",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "items_summary",
+              "displayName": "items_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "event_id",
+              "displayName": "event_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_updated",
+              "displayName": "last_updated",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1568,
+        -16
+      ],
+      "id": "69e81ad8-1812-406f-a98a-c6c42fcb9491",
+      "name": "Actualizar estado del pedido",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "wR9IFA8zRedsHpK4",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const evento = $('Validar cambio de estado').first().json;\n\nreturn [{\n  json: {\n    valid: false,\n    event_id: evento.event_id,\n    event_type: evento.event_type,\n    order_id: evento.order_id,\n    errors: [\n      `No existe el pedido ${evento.order_id} en Google Sheets`\n    ]\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1552,
+        224
+      ],
+      "id": "7cf9d6e5-8e88-4ca8-8cb0-d4e99c14c5ce",
+      "name": "Preparar error pedido inexistente"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Enrutar tipo de evento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Evento nuevo?": {
+      "main": [
+        [
+          {
+            "node": "Enrutar evento nuevo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recuperar datos del pedido.": {
+      "main": [
+        [
+          {
+            "node": "Actualizar pedidos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actualizar pedidos": {
+      "main": [
+        [
+          {
+            "node": "Registrar evento procesado.",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar eventos procesados": {
+      "main": [
+        [
+          {
+            "node": "¿Evento nuevo?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enrutar tipo de evento": {
+      "main": [
+        [
+          {
+            "node": "Validar pedido creado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Validar cambio de estado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar pedido creado": {
+      "main": [
+        [
+          {
+            "node": "¿Evento válido?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Evento válido?": {
+      "main": [
+        [
+          {
+            "node": "Consultar eventos procesados",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Registrar evento rechazado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar cambio de estado": {
+      "main": [
+        [
+          {
+            "node": "¿Evento válido?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enrutar evento nuevo": {
+      "main": [
+        [
+          {
+            "node": "Recuperar datos del pedido.",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Buscar pedido existente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar pedido existente": {
+      "main": [
+        [
+          {
+            "node": "¿Pedido existe?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Pedido existe?": {
+      "main": [
+        [
+          {
+            "node": "Actualizar estado del pedido",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error pedido inexistente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actualizar estado del pedido": {
+      "main": [
+        [
+          {
+            "node": "Registrar evento procesado.",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error pedido inexistente": {
+      "main": [
+        [
+          {
+            "node": "Registrar evento rechazado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "a89ecb84-311a-4816-99c0-c307ea8399c6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "fd52207705fff5885c4aa6417f56572cb22be79fd0cd7eae81bc07ad8e41e921"
+  },
+  "nodeGroups": [],
+  "id": "ox9ujaSVzKULKYLJ",
+  "tags": []
+}
