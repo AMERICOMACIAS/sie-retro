@@ -1,5 +1,11 @@
 # ESRETRO — Tarea 1 de SIE
 
+## Tarea 2
+
+La integración con n8n Cloud, el back-office independiente,
+la gestión de incidencias y la automatización mediante IA
+están documentadas en [README_TAREA2.md](README_TAREA2.md).
+
 Prototipo académico de tienda de consolas antiguas y videojuegos
 físicos reacondicionados. Sin actividad comercial real.
 
