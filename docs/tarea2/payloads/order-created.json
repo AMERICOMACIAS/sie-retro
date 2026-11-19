@@ -1,1 +1,29 @@
-
+{
+  "schema_version": "1.0",
+  "event_id": 991801,
+  "event_type": "order.created",
+  "occurred_at": "2026-11-18T18:30:00+01:00",
+  "order_id": 991801,
+  "product_id": null,
+  "data": {
+    "order_number": "991801",
+    "status": "processing",
+    "currency": "EUR",
+    "total": "49.99",
+    "payment_method": "tarjeta_simulada",
+    "customer": {
+      "id": null,
+      "name": "Cliente Prueba P1",
+      "email": "prueba-p1@example.com"
+    },
+    "items": [
+      {
+        "product_id": 26,
+        "sku": "TEST-P1",
+        "name": "Videojuego de prueba",
+        "quantity": 1,
+        "total": "49.99"
+      }
+    ]
+  }
+}
