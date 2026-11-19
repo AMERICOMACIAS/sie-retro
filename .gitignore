@@ -1,15 +1,21 @@
-# Ignorar inicialmente todo lo situado en la raíz
+# Mantener en el repositorio solo documentación y desarrollos propios.
 /*
 
-# Archivos propios del repositorio
+# Archivos propios de Git
 !/.gitignore
 !/.gitattributes
-!/README.md
 
-# Documentación del proyecto
+# README de las dos tareas
+!/README.md
+!/README_TAREA2.md
+
+# Exportaciones de workflows n8n para Tarea 2
+!/SIE-T2-*.json
+
+# Documentación y ejemplos (incluye docs/tarea2/payloads)
 !/docs/
 
-# Permitir únicamente nuestras extensiones y tema propios
+# Plugin y tema hijo propios, sin el núcleo de WordPress
 !/wp-content/
 /wp-content/*
 !/wp-content/plugins/
@@ -18,3 +24,12 @@
 !/wp-content/themes/
 /wp-content/themes/*
 !/wp-content/themes/sie-retro-child/
+
+# Secretos y archivos locales (incluso en subcarpetas permitidas)
+**/.env
+**/.env.*
+**/wp-config.php
+**/credentials.json
+**/*-secrets.json
+**/*.pem
+**/*.key
