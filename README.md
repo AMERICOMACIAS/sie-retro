@@ -103,8 +103,4 @@ La memoria técnica y el vídeo demostrativo forman parte de la entrega del proy
 
 ## Incidencias conocidas
 
-En el equipo de Américo, el puerto 80 estaba ocupado.
-Se configuró Apache para utilizar el puerto 8080.
-
-El funcionamiento en el hosting de DonDominio está pendiente
-de comprobar, especialmente por su límite de memoria.
+En el equipo de Américo, el puerto 80 estaba ocupado. --> Se configuró Apache para utilizar el puerto 8080.
