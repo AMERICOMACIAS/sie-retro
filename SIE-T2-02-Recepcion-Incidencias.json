@@ -875,6 +875,52 @@
           "name": "Google Sheets account"
         }
       }
+    },
+    {
+      "parameters": {
+        "chatId": "-1004338709391",
+        "text": "={{ 'Nueva incidencia: ' + $('Validar solicitud de soporte').first().json.incident_id + '\\nAsunto: ' + $('Validar solicitud de soporte').first().json.subject + '\\n\\nRevisa la incidencia y decide:' }}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "✅ Aprobar",
+                    "additionalFields": {
+                      "callback_data": "={{ 'approve:' + $('Validar solicitud de soporte').first().json.incident_id }}"
+                    }
+                  },
+                  {
+                    "text": "❌ Rechazar",
+                    "additionalFields": {
+                      "callback_data": "={{ 'reject:' + $('Validar solicitud de soporte').first().json.incident_id }}"
+                    }
+                  }
+                ]
+              }
+            },
+            {}
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2176,
+        -176
+      ],
+      "id": "37ab48e7-984b-45c5-b752-053a57f6344d",
+      "name": "Send a text message",
+      "webhookId": "19c6b451-ecf9-4968-8bb1-95578f6bdf24",
+      "credentials": {
+        "telegramApi": {
+          "id": "VMrwcI9vH9LcKTji",
+          "name": "Telegram account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -996,14 +1042,25 @@
           }
         ]
       ]
+    },
+    "Registrar incidencia procesada": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "fbbfb7ba-cb83-4fa6-8b0b-68af7ed13b5d",
+  "versionId": "52b77e45-113a-464f-9779-3fe4003207f3",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "fd52207705fff5885c4aa6417f56572cb22be79fd0cd7eae81bc07ad8e41e921"
