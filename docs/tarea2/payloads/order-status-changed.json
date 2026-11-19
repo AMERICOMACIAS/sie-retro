@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "event_id": 992002,
+  "event_type": "order.status_changed",
+  "occurred_at": "2026-11-19T10:05:00+01:00",
+  "order_id": 991801,
+  "product_id": null,
+  "data": {
+    "previous_status": "processing",
+    "status": "completed"
+  }
+}
