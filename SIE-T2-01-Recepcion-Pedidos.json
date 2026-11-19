@@ -182,7 +182,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1840,
+        1920,
         -64
       ],
       "id": "ab410f37-5597-4281-b4d0-f7907182d74c",
@@ -961,6 +961,28 @@
       ],
       "id": "7cf9d6e5-8e88-4ca8-8cb0-d4e99c14c5ce",
       "name": "Preparar error pedido inexistente"
+    },
+    {
+      "parameters": {
+        "chatId": "-1004338709391",
+        "text": "={{  '🛒 NUEVO PEDIDO ESRETRO\\n\\n' + '📦 Pedido: #' + ($('Validar pedido creado').first().json.order_number || $('Validar pedido creado').first().json.order_id) + '\\n' + '👤 Cliente: ' + $('Validar pedido creado').first().json.customer_name + '\\n' + '💰 Total: ' + Number($('Validar pedido creado').first().json.total).toFixed(2) + ' ' + $('Validar pedido creado').first().json.currency + '\\n' + '💳 Pago: ' + ($('Validar pedido creado').first().json.payment_method || 'No especificado') + '\\n' + '📋 Estado: ' + $('Validar pedido creado').first().json.status + '\\n' + '🛍️ Productos: ' + $('Validar pedido creado').first().json.items_summary }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1728,
+        -192
+      ],
+      "id": "2346d42f-0e19-4295-a9a7-1f801cd90e2c",
+      "name": "Send a text message",
+      "webhookId": "687cd1fa-8d26-4f8b-90ea-8e3c53538c9e",
+      "credentials": {
+        "telegramApi": {
+          "id": "VMrwcI9vH9LcKTji",
+          "name": "Telegram account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -1002,7 +1024,7 @@
       "main": [
         [
           {
-            "node": "Registrar evento procesado.",
+            "node": "Send a text message",
             "type": "main",
             "index": 0
           }
@@ -1146,14 +1168,25 @@
           }
         ]
       ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Registrar evento procesado.",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "a89ecb84-311a-4816-99c0-c307ea8399c6",
+  "versionId": "1fbeb403-7f9a-493c-930f-d0fb0ff1de1b",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "fd52207705fff5885c4aa6417f56572cb22be79fd0cd7eae81bc07ad8e41e921"
