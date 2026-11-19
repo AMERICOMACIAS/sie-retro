@@ -58,6 +58,8 @@ Algunos enlaces administrativos requieren una cuenta con permisos. El acceso pú
 - [`wp-content/plugins/sie-retro/`](wp-content/plugins/sie-retro/): plugin propio WordPress/WooCommerce.
 - [`SIE-T2-01-Recepcion-Pedidos.json`](SIE-T2-01-Recepcion-Pedidos.json): exportación versionada del flujo de pedidos.
 - [`SIE-T2-02-Recepcion-Incidencias.json`](SIE-T2-02-Recepcion-Incidencias.json): exportación versionada del flujo de incidencias.
+- [`SIE-T2-03-Aprobacion-Telegram.json`](SIE-T2-03-Aprobacion-Telegram.json):
+  workflow de aprobación y rechazo de incidencias mediante Telegram.
 - [`docs/pruebas.md`](docs/pruebas.md): pruebas funcionales de la Tarea 1.
 - [`docs/pruebas-tarea2.md`](docs/pruebas-tarea2.md): pruebas de aceptación P1-P5 y criterios de reproducción de la Tarea 2.
 - [`docs/tarea2/payloads/`](docs/tarea2/payloads/): tres ejemplos completos de mensajes JSON (`order.created`, `order.status_changed` y `support.requested`).
