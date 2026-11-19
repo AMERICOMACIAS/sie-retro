@@ -23,7 +23,11 @@ function sie_retro_inicializar_plugin() {
     require_once __DIR__ . '/includes/class-sie-retro-events.php';
     require_once __DIR__ . '/includes/class-sie-retro-simulated-gateway.php';
     require_once __DIR__ . '/includes/class-sie-retro-support.php';
+    require_once __DIR__ . '/includes/class-sie-retro-webhook.php';
 
+    if ( class_exists( 'SIE_Retro_Webhook' ) ) {
+        SIE_Retro_Webhook::init();
+    }
     // Registro de pedidos en el checkout por bloques.
     add_action(
         'woocommerce_store_api_checkout_order_processed',
@@ -31,6 +35,14 @@ function sie_retro_inicializar_plugin() {
         10,
         1
     );
+    // Registrar los cambios de estado de los pedidos.
+    add_action(
+        'woocommerce_order_status_changed',
+        'sie_retro_evento_estado_pedido_cambiado',
+        10,
+        4
+    );
+
     // Eventos de navegación y compra.
     add_action( 'wp', 'sie_retro_registrar_evento_checkout' );
     add_action( 'wp', 'sie_retro_registrar_evento_producto' );
@@ -73,22 +85,113 @@ function sie_retro_registrar_pasarela( $gateways ) {
     return $gateways;
 }
 
+
+
 /**
- * Registra el evento order.created.
+ * Registra order.created una sola vez por pedido.
  */
 function sie_retro_evento_pedido_creado( $order ) {
     if ( ! $order instanceof WC_Order ) {
         return;
     }
 
-    sie_retro_guardar_evento(
-        'order.created',
-        array(
-            'total'  => $order->get_total(),
-            'moneda' => $order->get_currency(),
-            'estado' => $order->get_status(),
-            'origen' => current_filter(),
+    // Evitar generar otro evento para el mismo pedido.
+    $existing_event_id = $order->get_meta(
+        '_sie_retro_order_created_event_id',
+        true
+    );
+
+    if ( $existing_event_id ) {
+        return;
+    }
+
+    // Datos del cliente, incluyendo clientes invitados.
+    $customer_id = $order->get_customer_id();
+
+    $customer_name = trim(
+        $order->get_billing_first_name() . ' '
+        . $order->get_billing_last_name()
+    );
+
+    $customer = array(
+        'id'    => $customer_id ? (int) $customer_id : null,
+        'name'  => $customer_name,
+        'email' => $order->get_billing_email(),
+    );
+
+    // Obtener los artículos del pedido.
+    $items = array();
+
+    foreach ( $order->get_items( 'line_item' ) as $item ) {
+        $product = $item->get_product();
+
+        $items[] = array(
+            'product_id' => (int) $item->get_product_id(),
+            'name'       => $item->get_name(),
+            'sku'        => $product ? $product->get_sku() : '',
+            'quantity'   => 0 + $item->get_quantity(),
+            'total'      => wc_format_decimal(
+                $item->get_total(),
+                wc_get_price_decimals()
+            ),
+        );
+    }
+
+    $datos = array(
+        'order_number' => (string) $order->get_order_number(),
+        'status'       => $order->get_status(),
+        'currency'     => $order->get_currency(),
+        'total'        => wc_format_decimal(
+            $order->get_total(),
+            wc_get_price_decimals()
         ),
+        'customer'     => $customer,
+        'items'        => $items,
+    );
+
+    // Registrar el evento y recuperar su ID real.
+    $event_id = sie_retro_guardar_evento(
+        'order.created',
+        $datos,
+        $order->get_id()
+    );
+
+    // Marcar el pedido solo si el registro ha tenido éxito.
+    if ( $event_id ) {
+        $order->update_meta_data(
+            '_sie_retro_order_created_event_id',
+            absint( $event_id )
+        );
+
+        $order->save();
+    }
+}
+
+/**
+ * Registra los cambios de estado de un pedido.
+ */
+function sie_retro_evento_estado_pedido_cambiado(
+    $order_id,
+    $old_status,
+    $new_status,
+    $order
+) {
+    if ( ! $order instanceof WC_Order ) {
+        $order = wc_get_order( $order_id );
+    }
+
+    if ( ! $order ) {
+        return;
+    }
+
+    $datos = array(
+        'previous_status' => sanitize_key( $old_status ),
+        'status'          => sanitize_key( $new_status ),
+    );
+
+    sie_retro_guardar_evento(
+        'order.status_changed',
+        $datos,
         $order->get_id()
     );
 }
@@ -195,8 +298,9 @@ function sie_retro_registrar_evento_carrito(
     );
 }
 
+
 /**
- * Centraliza las llamadas al registro de eventos.
+ * Centraliza el registro y envío de eventos.
  */
 function sie_retro_guardar_evento(
     $tipo,
@@ -205,22 +309,49 @@ function sie_retro_guardar_evento(
     $product_id = null
 ) {
     if (
-        class_exists( 'SIE_Retro_Events' )
-        && is_callable( array( 'SIE_Retro_Events', 'record' ) )
+        ! class_exists( 'SIE_Retro_Events' )
+        || ! is_callable( array( 'SIE_Retro_Events', 'record' ) )
     ) {
-        $datos_evento = is_array( $datos ) ? $datos : array();
-
-        if ( null !== $order_id ) {
-            $datos_evento['order_id'] = absint( $order_id );
-        }
-
-        if ( null !== $product_id ) {
-            $datos_evento['product_id'] = absint( $product_id );
-        }
-
-        SIE_Retro_Events::record( $tipo, $datos_evento );
+        return false;
     }
+
+    $datos_evento = is_array( $datos ) ? $datos : array();
+
+    if ( null !== $order_id ) {
+        $datos_evento['order_id'] = absint( $order_id );
+    }
+
+    if ( null !== $product_id ) {
+        $datos_evento['product_id'] = absint( $product_id );
+    }
+
+    // Guardar primero el evento en MariaDB.
+    $event_id = SIE_Retro_Events::record( $tipo, $datos_evento );
+
+    if ( false === $event_id ) {
+        return false;
+    }
+
+    // Programar el envío de los eventos de pedidos a n8n.
+    if (
+        in_array(
+            $tipo,
+            array(
+                'order.created',
+                'order.status_changed',
+                'support.requested',
+            ),
+            true
+        )
+        && class_exists( 'SIE_Retro_Webhook' )
+    ) {
+        SIE_Retro_Webhook::schedule_event( $event_id );
+    }
+
+    // Devolver el identificador real del evento.
+    return $event_id;
 }
+
 
 /**
  * Añade el menú de administración de eventos.
