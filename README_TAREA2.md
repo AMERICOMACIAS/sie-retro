@@ -67,7 +67,7 @@ Algunos enlaces administrativos requieren una cuenta con permisos. El acceso pú
 - [`docs/uso-ia.md`](docs/uso-ia.md): registro histórico de uso de IA durante la Tarea 1; complementado por el registro de la Tarea 2.
 - [`README.md`](README.md): documentación general e instrucciones iniciales de la Tarea 1.
 
-**Estado de las exportaciones:** la versión publicada en n8n puede incluir nodos de Telegram y un flujo independiente de aprobación/rechazo que no aparecen en los dos JSON actualmente versionados. Para reproducir exactamente el sistema demostrado, hay que incorporar al repositorio las **exportaciones definitivas de los tres flujos, si el tercero existe como workflow separado**, y comprobar que no incluyan secretos. No se debe dar por hecho que un JSON exportado representa automáticamente la última versión publicada.
+**Estado de las exportaciones**: el repositorio incluye los tres workflows de la Tarea 2: recepción de pedidos, recepción de incidencias y aprobación mediante Telegram. Los dos primeros incluyen nodos de notificación, mientras que el tercero procesa las decisiones humanas y actualiza Google Sheets. Las exportaciones corresponden a la configuración versionada y deben contrastarse con los workflows publicados en n8n antes de la demostración.
 
 ## 4. Requisitos previos
 
@@ -162,8 +162,6 @@ La recepción de una incidencia sigue este proceso:
 4. Una **cadena LLM con un modelo de OpenAI** clasifica el caso y propone un texto de respuesta en un JSON estructurado con `category`, `priority`, `ai_analysis` y `ai_response`.
 5. El análisis se guarda con el estado **«Pendiente de revisión»**. No se envía una respuesta automática al cliente.
 6. Telegram permite avisar al equipo. La documentación final del grupo describe asimismo un flujo de botones **«Aprobar» / «Rechazar»** que actualiza el estado y la aprobación en Sheets; debe acompañarse de la exportación y de una ejecución de prueba para acreditarlo.
-
-**Alcance de la IA:** en la exportación versionada de `SIE-T2-02` se observa una cadena LLM y un analizador de salida estructurada, **no un agente con herramientas autónomas de consulta conectadas al modelo**. No se debe presentar como validada una capacidad agéntica adicional sin aportar el workflow y las evidencias correspondientes. La revisión humana impide atribuir a la IA decisiones automáticas sobre reembolsos, devoluciones o estados de pedidos.
 
 ## 8. Pruebas de aceptación y evidencias
 
