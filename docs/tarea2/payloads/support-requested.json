@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "event_id": 991803,
+  "event_type": "support.requested",
+  "occurred_at": "2026-11-18T19:00:00+01:00",
+  "order_id": null,
+  "product_id": null,
+  "data": {
+    "subject": "Prueba P3 - Consulta sobre envío",
+    "message": "Quisiera conocer el estado de entrega de mi pedido de prueba."
+  }
+}
